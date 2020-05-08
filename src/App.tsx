@@ -1,25 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+import { Layout } from "antd";
+
+import "./styles/index.css";
+
+import NavBar from "./components/navbar/Navbar";
+import Dashboard from "./components/dashboard/Dashboard";
+import SearchHeader from "./components/header/Search";
+
+const { Footer } = Layout;
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div>
+        <Layout style={{ minHeight: "100vh" }}>
+          <NavBar />
+          <Layout className="site-layout">
+            <SearchHeader />
+            <div className="header-margin" />
+            <Switch>
+              <Route exact path="/">
+                <Dashboard />
+              </Route>
+              <Route path="/dashboard">
+                <Dashboard />
+              </Route>
+            </Switch>
+            <Footer style={{ textAlign: "center" }}>
+              Xene UI ©2020 Created by fristonio
+            </Footer>
+          </Layout>
+        </Layout>
+      </div>
+    </Router>
   );
 }
 
