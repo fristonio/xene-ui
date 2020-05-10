@@ -157,6 +157,62 @@ export interface ResponseRegistryItemsFromPrefix {
    */
   items?: Array<string>;
 }
+/**
+ *
+ * @export
+ * @interface ResponseSecretInfo
+ */
+export interface ResponseSecretInfo {
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseSecretInfo
+   */
+  name?: string;
+  /**
+   *
+   * @type {boolean}
+   * @memberof ResponseSecretInfo
+   */
+  restricted?: boolean;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseSecretInfo
+   */
+  type?: string;
+}
+/**
+ *
+ * @export
+ * @interface ResponseWorkflowInfo
+ */
+export interface ResponseWorkflowInfo {
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ResponseWorkflowInfo
+   */
+  agents?: Array<string>;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseWorkflowInfo
+   */
+  name?: string;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ResponseWorkflowInfo
+   */
+  pipelines?: Array<string>;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ResponseWorkflowInfo
+   */
+  triggers?: Array<string>;
+}
 
 /**
  * ApiApi - axios parameter creator
@@ -1135,26 +1191,118 @@ export const RegistryApiAxiosParamCreator = function (
     },
     /**
      *
-     * @summary List all the keys of items in the registry of the provided type.
-     * @param {string} regitem RegistryItem type for the listing.
+     * @summary List all the keys of items in the registry of the provided type agent.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    apiV1RegistryListRegitemGet: async (
-      regitem: string,
+    apiV1RegistryListAgentsGet: async (
       options: any = {}
     ): Promise<RequestArgs> => {
-      // verify required parameter 'regitem' is not null or undefined
-      if (regitem === null || regitem === undefined) {
-        throw new RequiredError(
-          "regitem",
-          "Required parameter regitem was null or undefined when calling apiV1RegistryListRegitemGet."
-        );
+      const localVarPath = `/api/v1/registry/list/agents`;
+      const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
       }
-      const localVarPath = `/api/v1/registry/list/{regitem}`.replace(
-        `{${"regitem"}}`,
-        encodeURIComponent(String(regitem))
-      );
+      const localVarRequestOptions = {
+        method: "GET",
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication ApiKeyAuth required
+      if (configuration && configuration.apiKey) {
+        const localVarApiKeyValue =
+          typeof configuration.apiKey === "function"
+            ? await configuration.apiKey("Authorization")
+            : await configuration.apiKey;
+        localVarHeaderParameter["Authorization"] = localVarApiKeyValue;
+      }
+
+      localVarUrlObj.query = {
+        ...localVarUrlObj.query,
+        ...localVarQueryParameter,
+        ...options.query,
+      };
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: globalImportUrl.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary List all the keys of items in the registry of the provided type agent.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1RegistryListSecretsGet: async (
+      options: any = {}
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/api/v1/registry/list/secrets`;
+      const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+      const localVarRequestOptions = {
+        method: "GET",
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication ApiKeyAuth required
+      if (configuration && configuration.apiKey) {
+        const localVarApiKeyValue =
+          typeof configuration.apiKey === "function"
+            ? await configuration.apiKey("Authorization")
+            : await configuration.apiKey;
+        localVarHeaderParameter["Authorization"] = localVarApiKeyValue;
+      }
+
+      localVarUrlObj.query = {
+        ...localVarUrlObj.query,
+        ...localVarQueryParameter,
+        ...options.query,
+      };
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: globalImportUrl.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Gather information about all the workflow objects managed by xene.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1RegistryListWorkflowsGet: async (
+      options: any = {}
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/api/v1/registry/list/workflows`;
       const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
       let baseOptions;
       if (configuration) {
@@ -2073,13 +2221,11 @@ export const RegistryApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @summary List all the keys of items in the registry of the provided type.
-     * @param {string} regitem RegistryItem type for the listing.
+     * @summary List all the keys of items in the registry of the provided type agent.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async apiV1RegistryListRegitemGet(
-      regitem: string,
+    async apiV1RegistryListAgentsGet(
       options?: any
     ): Promise<
       (
@@ -2089,7 +2235,63 @@ export const RegistryApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await RegistryApiAxiosParamCreator(
         configuration
-      ).apiV1RegistryListRegitemGet(regitem, options);
+      ).apiV1RegistryListAgentsGet(options);
+      return (
+        axios: AxiosInstance = globalAxios,
+        basePath: string = BASE_PATH
+      ) => {
+        const axiosRequestArgs = {
+          ...localVarAxiosArgs.options,
+          url: basePath + localVarAxiosArgs.url,
+        };
+        return axios.request(axiosRequestArgs);
+      };
+    },
+    /**
+     *
+     * @summary List all the keys of items in the registry of the provided type agent.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async apiV1RegistryListSecretsGet(
+      options?: any
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<Array<ResponseSecretInfo>>
+    > {
+      const localVarAxiosArgs = await RegistryApiAxiosParamCreator(
+        configuration
+      ).apiV1RegistryListSecretsGet(options);
+      return (
+        axios: AxiosInstance = globalAxios,
+        basePath: string = BASE_PATH
+      ) => {
+        const axiosRequestArgs = {
+          ...localVarAxiosArgs.options,
+          url: basePath + localVarAxiosArgs.url,
+        };
+        return axios.request(axiosRequestArgs);
+      };
+    },
+    /**
+     *
+     * @summary Gather information about all the workflow objects managed by xene.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async apiV1RegistryListWorkflowsGet(
+      options?: any
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<Array<ResponseWorkflowInfo>>
+    > {
+      const localVarAxiosArgs = await RegistryApiAxiosParamCreator(
+        configuration
+      ).apiV1RegistryListWorkflowsGet(options);
       return (
         axios: AxiosInstance = globalAxios,
         basePath: string = BASE_PATH
@@ -2518,17 +2720,41 @@ export const RegistryApiFactory = function (
     },
     /**
      *
-     * @summary List all the keys of items in the registry of the provided type.
-     * @param {string} regitem RegistryItem type for the listing.
+     * @summary List all the keys of items in the registry of the provided type agent.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    apiV1RegistryListRegitemGet(
-      regitem: string,
+    apiV1RegistryListAgentsGet(
       options?: any
     ): AxiosPromise<Array<ResponseAgentInfo>> {
       return RegistryApiFp(configuration)
-        .apiV1RegistryListRegitemGet(regitem, options)
+        .apiV1RegistryListAgentsGet(options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary List all the keys of items in the registry of the provided type agent.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1RegistryListSecretsGet(
+      options?: any
+    ): AxiosPromise<Array<ResponseSecretInfo>> {
+      return RegistryApiFp(configuration)
+        .apiV1RegistryListSecretsGet(options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Gather information about all the workflow objects managed by xene.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1RegistryListWorkflowsGet(
+      options?: any
+    ): AxiosPromise<Array<ResponseWorkflowInfo>> {
+      return RegistryApiFp(configuration)
+        .apiV1RegistryListWorkflowsGet(options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -2783,15 +3009,40 @@ export class RegistryApi extends BaseAPI {
 
   /**
    *
-   * @summary List all the keys of items in the registry of the provided type.
-   * @param {string} regitem RegistryItem type for the listing.
+   * @summary List all the keys of items in the registry of the provided type agent.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RegistryApi
    */
-  public apiV1RegistryListRegitemGet(regitem: string, options?: any) {
+  public apiV1RegistryListAgentsGet(options?: any) {
     return RegistryApiFp(this.configuration)
-      .apiV1RegistryListRegitemGet(regitem, options)
+      .apiV1RegistryListAgentsGet(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary List all the keys of items in the registry of the provided type agent.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof RegistryApi
+   */
+  public apiV1RegistryListSecretsGet(options?: any) {
+    return RegistryApiFp(this.configuration)
+      .apiV1RegistryListSecretsGet(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Gather information about all the workflow objects managed by xene.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof RegistryApi
+   */
+  public apiV1RegistryListWorkflowsGet(options?: any) {
+    return RegistryApiFp(this.configuration)
+      .apiV1RegistryListWorkflowsGet(options)
       .then((request) => request(this.axios, this.basePath));
   }
 

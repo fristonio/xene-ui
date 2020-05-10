@@ -70,7 +70,7 @@ class AgentListComponent extends React.Component<{}, State> {
     callback: (res: Array<AgentInfo>, success: boolean) => void
   ) => {
     RegistryApiFactory(config.getAPIConfig())
-      .apiV1RegistryListRegitemGet(config.defaults.agentRegistryItem)
+      .apiV1RegistryListAgentsGet(config.defaults.agentRegistryItem)
       .then((response: AxiosResponse) => {
         if (response.status === 200) {
           let resp = new Array<AgentInfo>();

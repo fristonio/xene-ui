@@ -8,8 +8,9 @@ import {
   SettingOutlined,
   BookOutlined,
 } from "@ant-design/icons";
-import { withRouter, RouteComponentProps } from "react-router-dom";
+import { withRouter, RouteComponentProps, Redirect } from "react-router-dom";
 import "./../../styles/navbar.css";
+import { config } from "../../config";
 
 const { Sider } = Layout;
 
@@ -27,6 +28,18 @@ class NavBar extends React.Component<RouteComponentProps, State> {
   };
 
   render() {
+    let path = this.props.location.pathname.substring("/dashboard/".length);
+    let defaultSelectedKey = "1";
+    switch (path) {
+      case "workflows": {
+        defaultSelectedKey = "2";
+        break;
+      }
+      case "secrets": {
+        defaultSelectedKey = "3";
+        break;
+      }
+    }
     return (
       <Sider
         collapsible
@@ -37,7 +50,7 @@ class NavBar extends React.Component<RouteComponentProps, State> {
         <div className="logo" />
         <Menu
           theme="dark"
-          defaultSelectedKeys={["1"]}
+          defaultSelectedKeys={[defaultSelectedKey]}
           mode="inline"
           onClick={(param) => {
             let location: string;
@@ -56,7 +69,10 @@ class NavBar extends React.Component<RouteComponentProps, State> {
                 break;
               }
               case "4":
-              case "5":
+              case "5": {
+                window.location.replace(config.defaults.xeneDocsURL);
+                return;
+              }
               default:
                 location = "/dashboard/status";
             }
