@@ -10,19 +10,26 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
+    "@types/react-highlight-words": "^0.16.1",
     "@types/react-router-dom": "^5.1.5",
     "antd": "^4.2.0",
+    "axios": "^0.19.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-highlight-words": "^0.16.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
+    "swagger-client": "^3.10.2",
     "typescript": "^3.8.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "apigen": "npx openapi-generator generate -i http://localhost:6060/docs/api/v1/doc.json -g typescript-axios -o src/client/",
+    "prettify": "yarn prettier --write src/",
+    "check-lint": "yarn eslint --ext .tsx 'src/**'"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -40,6 +47,7 @@
     ]
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^1.0.13-4.3.1",
     "prettier": "2.0.5"
   }
 }
