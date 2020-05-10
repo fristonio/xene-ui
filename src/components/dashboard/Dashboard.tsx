@@ -9,10 +9,13 @@ import SecretsListComponent from "./secret/List";
 const Dashboard: React.FunctionComponent = () => {
   return (
     <Switch>
-      <Route exact path="/dashboard/">
+      <Route exact path="/">
         <AgentsListComponent />
       </Route>
-      <Route path="/dashboard/agent">
+      <Route exact path="/dashboard">
+        <AgentsListComponent />
+      </Route>
+      <Route path="/dashboard/agents">
         <AgentsListComponent />
       </Route>
       <Route path="/dashboard/workflows">

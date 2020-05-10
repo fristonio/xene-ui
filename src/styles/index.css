@@ -148,3 +148,15 @@ a {
 .header-margin {
   margin: 1.75rem 0;
 }
+
+.list-min-height {
+  min-height: 35rem;
+}
+
+.site-layout {
+  margin-left: 200px;
+}
+
+.page-container {
+  margin: 2rem;
+}

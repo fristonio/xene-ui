@@ -6,6 +6,7 @@ import {
   ForkOutlined,
   CloudServerOutlined,
   SettingOutlined,
+  BookOutlined,
 } from "@ant-design/icons";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import "./../../styles/navbar.css";
@@ -31,6 +32,7 @@ class NavBar extends React.Component<RouteComponentProps, State> {
         collapsible
         collapsed={this.state.collapsed}
         onCollapse={this.onCollapse}
+        className="navbar"
       >
         <div className="logo" />
         <Menu
@@ -54,6 +56,7 @@ class NavBar extends React.Component<RouteComponentProps, State> {
                 break;
               }
               case "4":
+              case "5":
               default:
                 location = "/dashboard/status";
             }
@@ -72,6 +75,9 @@ class NavBar extends React.Component<RouteComponentProps, State> {
           </Menu.Item>
           <Menu.Item key="4" icon={<SettingOutlined />}>
             Status
+          </Menu.Item>
+          <Menu.Item key="5" icon={<BookOutlined />}>
+            Documentation
           </Menu.Item>
         </Menu>
       </Sider>
