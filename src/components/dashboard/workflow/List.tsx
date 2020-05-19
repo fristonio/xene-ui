@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import "./../../../styles/index.css";
 import "./../../../styles/dashboard.css";
@@ -219,6 +220,9 @@ class WorkflowsListComponent extends React.Component<{}, State> {
             a.name.localeCompare(b.name),
           multiple: 1,
         },
+        render: (name: string) => (
+          <Link to={"/dashboard/workflows/" + name}>{name}</Link>
+        ),
       },
       {
         title: "Pipelines",
@@ -227,7 +231,7 @@ class WorkflowsListComponent extends React.Component<{}, State> {
         render: (pipelines: Array<string>) => (
           <>
             {pipelines.map((pipeline: string) => (
-              <Tag color="blue" key={pipeline}>
+              <Tag color="purple" key={pipeline}>
                 {pipeline}
               </Tag>
             ))}
@@ -241,7 +245,7 @@ class WorkflowsListComponent extends React.Component<{}, State> {
         render: (triggers: Array<string>) => (
           <>
             {triggers.map((trigger: string) => (
-              <Tag color="blue" key={trigger}>
+              <Tag color="purple" key={trigger}>
                 {trigger}
               </Tag>
             ))}

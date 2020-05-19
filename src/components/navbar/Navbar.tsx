@@ -8,7 +8,7 @@ import {
   SettingOutlined,
   BookOutlined,
 } from "@ant-design/icons";
-import { withRouter, RouteComponentProps, Redirect } from "react-router-dom";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import "./../../styles/navbar.css";
 import { config } from "../../config";
 

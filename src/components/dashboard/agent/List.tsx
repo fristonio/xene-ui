@@ -92,6 +92,7 @@ class AgentListComponent extends React.Component<{}, State> {
       })
       .catch(function (error: any) {
         console.error(error);
+        callback(new Array<AgentInfo>(), false);
       });
   };
 
@@ -267,14 +268,18 @@ class AgentListComponent extends React.Component<{}, State> {
         title: "Actions",
         dataIndex: "actions",
         key: "actions",
-        render: () => {
+        render: (action: boolean, rec: AgentInfo) => {
           return (
             <Space>
               <Tooltip title="Download manifest">
                 <Button type="primary" icon={<DownloadOutlined />} />
               </Tooltip>
               <Tooltip title="Explore agent">
-                <Button type="primary" icon={<ExpandAltOutlined />} />
+                <Button
+                  type="primary"
+                  icon={<ExpandAltOutlined />}
+                  href={"/dashboard/agents/" + rec.name}
+                />
               </Tooltip>
             </Space>
           );

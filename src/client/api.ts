@@ -58,6 +58,112 @@ export interface ResponseAgentInfo {
 /**
  *
  * @export
+ * @interface ResponseAgentSecretInfo
+ */
+export interface ResponseAgentSecretInfo {
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseAgentSecretInfo
+   */
+  name?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseAgentSecretInfo
+   */
+  type?: string;
+}
+/**
+ *
+ * @export
+ * @interface ResponseAgentTriggerInfo
+ */
+export interface ResponseAgentTriggerInfo {
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseAgentTriggerInfo
+   */
+  name?: string;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ResponseAgentTriggerInfo
+   */
+  pipelines?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface ResponseAgentVerboseInfo
+ */
+export interface ResponseAgentVerboseInfo {
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseAgentVerboseInfo
+   */
+  address?: string;
+  /**
+   *
+   * @type {boolean}
+   * @memberof ResponseAgentVerboseInfo
+   */
+  healthy?: boolean;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseAgentVerboseInfo
+   */
+  name?: string;
+  /**
+   *
+   * @type {Array<ResponseAgentSecretInfo>}
+   * @memberof ResponseAgentVerboseInfo
+   */
+  secrets?: Array<ResponseAgentSecretInfo>;
+  /**
+   *
+   * @type {boolean}
+   * @memberof ResponseAgentVerboseInfo
+   */
+  secure?: boolean;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseAgentVerboseInfo
+   */
+  serverName?: string;
+  /**
+   *
+   * @type {Array<ResponseAgentWorkflowInfo>}
+   * @memberof ResponseAgentVerboseInfo
+   */
+  workflows?: Array<ResponseAgentWorkflowInfo>;
+}
+/**
+ *
+ * @export
+ * @interface ResponseAgentWorkflowInfo
+ */
+export interface ResponseAgentWorkflowInfo {
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseAgentWorkflowInfo
+   */
+  name?: string;
+  /**
+   *
+   * @type {Array<ResponseAgentTriggerInfo>}
+   * @memberof ResponseAgentWorkflowInfo
+   */
+  triggers?: Array<ResponseAgentTriggerInfo>;
+}
+/**
+ *
+ * @export
  * @interface ResponseHTTPError
  */
 export interface ResponseHTTPError {
@@ -851,6 +957,290 @@ export class HealthApi extends BaseAPI {
   public healthGet(options?: any) {
     return HealthApiFp(this.configuration)
       .healthGet(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+}
+
+/**
+ * InfoApi - axios parameter creator
+ * @export
+ */
+export const InfoApiAxiosParamCreator = function (
+  configuration?: Configuration
+) {
+  return {
+    /**
+     *
+     * @summary Returns verbose information about the agent.
+     * @param {string} name Name of the agent to get information about.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1InfoAgentNameGet: async (
+      name: string,
+      options: any = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'name' is not null or undefined
+      if (name === null || name === undefined) {
+        throw new RequiredError(
+          "name",
+          "Required parameter name was null or undefined when calling apiV1InfoAgentNameGet."
+        );
+      }
+      const localVarPath = `/api/v1/info/agent/{name}`.replace(
+        `{${"name"}}`,
+        encodeURIComponent(String(name))
+      );
+      const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+      const localVarRequestOptions = {
+        method: "GET",
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication ApiKeyAuth required
+      if (configuration && configuration.apiKey) {
+        const localVarApiKeyValue =
+          typeof configuration.apiKey === "function"
+            ? await configuration.apiKey("Authorization")
+            : await configuration.apiKey;
+        localVarHeaderParameter["Authorization"] = localVarApiKeyValue;
+      }
+
+      localVarUrlObj.query = {
+        ...localVarUrlObj.query,
+        ...localVarQueryParameter,
+        ...options.query,
+      };
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: globalImportUrl.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Returns verbose information about a workflow.
+     * @param {string} name Name of the workflow to get information about.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1InfoWorkflowNameGet: async (
+      name: string,
+      options: any = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'name' is not null or undefined
+      if (name === null || name === undefined) {
+        throw new RequiredError(
+          "name",
+          "Required parameter name was null or undefined when calling apiV1InfoWorkflowNameGet."
+        );
+      }
+      const localVarPath = `/api/v1/info/workflow/{name}`.replace(
+        `{${"name"}}`,
+        encodeURIComponent(String(name))
+      );
+      const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+      const localVarRequestOptions = {
+        method: "GET",
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication ApiKeyAuth required
+      if (configuration && configuration.apiKey) {
+        const localVarApiKeyValue =
+          typeof configuration.apiKey === "function"
+            ? await configuration.apiKey("Authorization")
+            : await configuration.apiKey;
+        localVarHeaderParameter["Authorization"] = localVarApiKeyValue;
+      }
+
+      localVarUrlObj.query = {
+        ...localVarUrlObj.query,
+        ...localVarQueryParameter,
+        ...options.query,
+      };
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: globalImportUrl.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+  };
+};
+
+/**
+ * InfoApi - functional programming interface
+ * @export
+ */
+export const InfoApiFp = function (configuration?: Configuration) {
+  return {
+    /**
+     *
+     * @summary Returns verbose information about the agent.
+     * @param {string} name Name of the agent to get information about.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async apiV1InfoAgentNameGet(
+      name: string,
+      options?: any
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<ResponseAgentVerboseInfo>
+    > {
+      const localVarAxiosArgs = await InfoApiAxiosParamCreator(
+        configuration
+      ).apiV1InfoAgentNameGet(name, options);
+      return (
+        axios: AxiosInstance = globalAxios,
+        basePath: string = BASE_PATH
+      ) => {
+        const axiosRequestArgs = {
+          ...localVarAxiosArgs.options,
+          url: basePath + localVarAxiosArgs.url,
+        };
+        return axios.request(axiosRequestArgs);
+      };
+    },
+    /**
+     *
+     * @summary Returns verbose information about a workflow.
+     * @param {string} name Name of the workflow to get information about.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async apiV1InfoWorkflowNameGet(
+      name: string,
+      options?: any
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+    > {
+      const localVarAxiosArgs = await InfoApiAxiosParamCreator(
+        configuration
+      ).apiV1InfoWorkflowNameGet(name, options);
+      return (
+        axios: AxiosInstance = globalAxios,
+        basePath: string = BASE_PATH
+      ) => {
+        const axiosRequestArgs = {
+          ...localVarAxiosArgs.options,
+          url: basePath + localVarAxiosArgs.url,
+        };
+        return axios.request(axiosRequestArgs);
+      };
+    },
+  };
+};
+
+/**
+ * InfoApi - factory interface
+ * @export
+ */
+export const InfoApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance
+) {
+  return {
+    /**
+     *
+     * @summary Returns verbose information about the agent.
+     * @param {string} name Name of the agent to get information about.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1InfoAgentNameGet(
+      name: string,
+      options?: any
+    ): AxiosPromise<ResponseAgentVerboseInfo> {
+      return InfoApiFp(configuration)
+        .apiV1InfoAgentNameGet(name, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Returns verbose information about a workflow.
+     * @param {string} name Name of the workflow to get information about.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1InfoWorkflowNameGet(
+      name: string,
+      options?: any
+    ): AxiosPromise<object> {
+      return InfoApiFp(configuration)
+        .apiV1InfoWorkflowNameGet(name, options)
+        .then((request) => request(axios, basePath));
+    },
+  };
+};
+
+/**
+ * InfoApi - object-oriented interface
+ * @export
+ * @class InfoApi
+ * @extends {BaseAPI}
+ */
+export class InfoApi extends BaseAPI {
+  /**
+   *
+   * @summary Returns verbose information about the agent.
+   * @param {string} name Name of the agent to get information about.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof InfoApi
+   */
+  public apiV1InfoAgentNameGet(name: string, options?: any) {
+    return InfoApiFp(this.configuration)
+      .apiV1InfoAgentNameGet(name, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Returns verbose information about a workflow.
+   * @param {string} name Name of the workflow to get information about.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof InfoApi
+   */
+  public apiV1InfoWorkflowNameGet(name: string, options?: any) {
+    return InfoApiFp(this.configuration)
+      .apiV1InfoWorkflowNameGet(name, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }
