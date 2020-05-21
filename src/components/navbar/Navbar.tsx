@@ -11,6 +11,8 @@ import {
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import "./../../styles/navbar.css";
 import { config } from "../../config";
+import logo from "./../../images/logo-rect.png";
+import logoSquare from "./../../images/logo.png";
 
 const { Sider } = Layout;
 
@@ -52,7 +54,13 @@ class NavBar extends React.Component<Props, State> {
         onCollapse={this.onCollapse}
         className="navbar"
       >
-        <div className="logo" />
+        <div className="logo">
+          <img
+            className="logo-image"
+            src={this.state.collapsed ? logoSquare : logo}
+            alt="Xene"
+          />
+        </div>
         <Menu
           theme="dark"
           defaultSelectedKeys={[defaultSelectedKey]}

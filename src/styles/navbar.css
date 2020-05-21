@@ -1,11 +1,16 @@
 .navbar {
   position: fixed;
   height: 100vh;
-  overflow: auto;
+  overflow: none;
 }
 
 .logo {
-  height: 32px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 16px;
+  height: 25px;
+  margin: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.logo-image {
+  height: 26px;
 }
