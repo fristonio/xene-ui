@@ -11,6 +11,7 @@ import {
   Button,
   Tooltip,
   Tag,
+  message,
 } from "antd";
 import {
   DownloadOutlined,
@@ -18,7 +19,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { CloseCircleTwoTone, CheckCircleTwoTone } from "@ant-design/icons";
-import { RegistryApiFactory } from "./../../../client";
+import { RegistryApiFactory, ResponseRegistryItem } from "./../../../client";
 import { config } from "../../../config";
 import { AxiosResponse } from "axios";
 import Highlighter from "react-highlight-words";
@@ -199,6 +200,30 @@ class SecretsListComponent extends React.Component<{}, State> {
     this.setState({ searchText: "" });
   };
 
+  downloadSecretManifest = (name: string) => {
+    RegistryApiFactory(config.getAPIConfig())
+      .apiV1RegistrySecretNameGet(name)
+      .then((resp: AxiosResponse<ResponseRegistryItem>) => {
+        let content: string =
+          resp.data.item !== undefined ? resp.data.item : "";
+
+        content = JSON.stringify(
+          JSON.parse(JSON.parse(content)["value"]),
+          null,
+          2
+        );
+        var blob = new Blob([content], {
+          type: "text/plain;charset=utf-8",
+        });
+
+        saveAs(blob, name + ".json");
+        message.success("Secret manifest for " + name + " download started");
+      })
+      .catch(function (error: any) {
+        message.error("Error while fetching secret manifest: " + error);
+      });
+  };
+
   render() {
     const { initLoading, data } = this.state;
     const columns = [
@@ -262,11 +287,17 @@ class SecretsListComponent extends React.Component<{}, State> {
         title: "Actions",
         dataIndex: "actions",
         key: "actions",
-        render: () => {
+        render: (action: boolean, rec: SecretInfo) => {
           return (
             <Space>
               <Tooltip title="Download manifest">
-                <Button type="primary" icon={<DownloadOutlined />} />
+                <Button
+                  type="primary"
+                  icon={<DownloadOutlined />}
+                  onClick={() => {
+                    this.downloadSecretManifest(rec.name);
+                  }}
+                />
               </Tooltip>
               <Tooltip title="Explore secret">
                 <Button type="primary" icon={<ExpandAltOutlined />} />

@@ -2,18 +2,28 @@ import React from "react";
 import "antd/dist/antd.css";
 import "./../../../styles/index.css";
 import "./../../../styles/dashboard.css";
-import { Table, Layout, PageHeader, Input, Space, Button, Tooltip } from "antd";
+import {
+  Table,
+  Layout,
+  PageHeader,
+  Input,
+  Space,
+  Button,
+  Tooltip,
+  message,
+} from "antd";
 import {
   DownloadOutlined,
   ExpandAltOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { CloseCircleTwoTone, CheckCircleTwoTone } from "@ant-design/icons";
-import { RegistryApiFactory } from "./../../../client";
+import { RegistryApiFactory, ResponseRegistryItem } from "./../../../client";
 import { config } from "../../../config";
 import { AxiosResponse } from "axios";
 import Highlighter from "react-highlight-words";
 import { FilterDropdownProps } from "antd/lib/table/interface";
+import { saveAs } from "file-saver";
 
 const { Content } = Layout;
 
@@ -193,6 +203,30 @@ class AgentListComponent extends React.Component<{}, State> {
     this.setState({ searchText: "" });
   };
 
+  downloadAgentManifest = (name: string) => {
+    RegistryApiFactory(config.getAPIConfig())
+      .apiV1RegistryAgentNameGet(name)
+      .then((resp: AxiosResponse<ResponseRegistryItem>) => {
+        let content: string =
+          resp.data.item !== undefined ? resp.data.item : "";
+
+        content = JSON.stringify(
+          JSON.parse(JSON.parse(content)["value"]),
+          null,
+          2
+        );
+        var blob = new Blob([content], {
+          type: "text/plain;charset=utf-8",
+        });
+
+        saveAs(blob, name + ".json");
+        message.success("Agent manifest for " + name + " download started");
+      })
+      .catch(function (error: any) {
+        message.error("Error while fetching agent manifest: " + error);
+      });
+  };
+
   render() {
     const { initLoading, data } = this.state;
     const columns = [
@@ -272,7 +306,13 @@ class AgentListComponent extends React.Component<{}, State> {
           return (
             <Space>
               <Tooltip title="Download manifest">
-                <Button type="primary" icon={<DownloadOutlined />} />
+                <Button
+                  type="primary"
+                  icon={<DownloadOutlined />}
+                  onClick={() => {
+                    this.downloadAgentManifest(rec.name);
+                  }}
+                />
               </Tooltip>
               <Tooltip title="Explore agent">
                 <Button
