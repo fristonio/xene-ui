@@ -11,31 +11,48 @@ import SearchHeader from "./components/header/Search";
 
 const { Footer } = Layout;
 
-function App() {
-  return (
-    <Router>
-      <div>
-        <Layout style={{ minHeight: "100vh" }}>
-          <NavBar />
-          <Layout className="site-layout">
-            <SearchHeader />
-            <div className="header-margin" />
-            <Switch>
-              <Route exact path="/">
-                <Dashboard />
-              </Route>
-              <Route path="/dashboard">
-                <Dashboard />
-              </Route>
-            </Switch>
-            <Footer style={{ textAlign: "center" }}>
-              Xene UI ©2020 Created by fristonio
-            </Footer>
+interface State {
+  collapsed: boolean;
+}
+
+class App extends React.Component<{}, State> {
+  state = {
+    collapsed: false,
+  };
+
+  onNavBarCollapse = (collapsed: boolean) => {
+    this.setState({ collapsed });
+  };
+
+  render() {
+    let layoutClass = this.state.collapsed
+      ? "site-layout-collapsed"
+      : "site-layout";
+    return (
+      <Router>
+        <div>
+          <Layout style={{ minHeight: "100vh" }}>
+            <NavBar onNavBarCollapse={this.onNavBarCollapse} />
+            <Layout className={layoutClass}>
+              <SearchHeader />
+              <div className="header-margin" />
+              <Switch>
+                <Route exact path="/">
+                  <Dashboard />
+                </Route>
+                <Route path="/dashboard">
+                  <Dashboard />
+                </Route>
+              </Switch>
+              <Footer style={{ textAlign: "center" }}>
+                Xene UI ©2020 Created by fristonio
+              </Footer>
+            </Layout>
           </Layout>
-        </Layout>
-      </div>
-    </Router>
-  );
+        </div>
+      </Router>
+    );
+  }
 }
 
 export default App;

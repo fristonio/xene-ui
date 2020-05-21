@@ -1,5 +1,6 @@
 import React from "react";
-import { Input, Layout } from "antd";
+import { Input, Layout, Avatar } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 
 import "./../../styles/utils.css";
 import "./../../styles/header.css";
@@ -17,6 +18,7 @@ const SearchHeader: React.FunctionComponent = () => {
           size="middle"
           onSearch={(value) => console.log(value)}
         />
+        <Avatar className="user-avatar" icon={<UserOutlined />} />
       </div>
     </Header>
   );

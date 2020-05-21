@@ -231,7 +231,7 @@ class WorkflowsListComponent extends React.Component<{}, State> {
         render: (pipelines: Array<string>) => (
           <>
             {pipelines.map((pipeline: string) => (
-              <Tag color="purple" key={pipeline}>
+              <Tag color="geekblue" key={pipeline}>
                 {pipeline}
               </Tag>
             ))}
@@ -245,7 +245,7 @@ class WorkflowsListComponent extends React.Component<{}, State> {
         render: (triggers: Array<string>) => (
           <>
             {triggers.map((trigger: string) => (
-              <Tag color="purple" key={trigger}>
+              <Tag color="geekblue" key={trigger}>
                 {trigger}
               </Tag>
             ))}

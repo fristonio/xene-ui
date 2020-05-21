@@ -9,3 +9,9 @@
 .search-bar {
   width: 40%;
 }
+
+.user-avatar {
+  background-color: #87d068;
+  position: absolute;
+  right: 250px;
+}

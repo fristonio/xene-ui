@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import "antd/dist/antd.css";
 import { Layout, Menu } from "antd";
 import {
@@ -18,12 +18,17 @@ interface State {
   collapsed: boolean;
 }
 
-class NavBar extends React.Component<RouteComponentProps, State> {
+interface Props extends RouteComponentProps {
+  onNavBarCollapse: (collapsed: boolean) => void;
+}
+
+class NavBar extends React.Component<Props, State> {
   state = {
     collapsed: false,
   };
 
   onCollapse = (collapsed: boolean) => {
+    this.props.onNavBarCollapse(collapsed);
     this.setState({ collapsed });
   };
 

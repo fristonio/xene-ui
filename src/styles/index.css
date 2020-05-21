@@ -157,6 +157,11 @@ a {
   margin-left: 200px;
 }
 
+.site-layout-collapsed {
+  margin-left: 80px;
+  transition-duration: 0.25s;
+}
+
 .page-container {
   margin: 2rem;
 }
