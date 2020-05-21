@@ -8,6 +8,7 @@ import { Result, Button } from "antd";
 import AgentsListComponent from "./agent/List";
 import AgentInfoPage from "./agent/AgentInfoPage";
 import WorkflowsListComponent from "./workflow/List";
+import WorkflowInfoPage from "./workflow/WorkflowInfoPage";
 import SecretsListComponent from "./secret/List";
 
 import "./../../styles/dashboard.css";
@@ -31,7 +32,7 @@ const Dashboard: React.FunctionComponent = () => {
         <WorkflowsListComponent />
       </Route>
       <Route path="/dashboard/workflows/:name">
-        <WorkflowsListComponent />
+        <WorkflowInfoPage />
       </Route>
       <Route path="/dashboard/secrets">
         <SecretsListComponent />

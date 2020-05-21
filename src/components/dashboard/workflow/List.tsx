@@ -314,7 +314,11 @@ class WorkflowsListComponent extends React.Component<{}, State> {
                 />
               </Tooltip>
               <Tooltip title="Explore workflow">
-                <Button type="primary" icon={<ExpandAltOutlined />} />
+                <Button
+                  type="primary"
+                  icon={<ExpandAltOutlined />}
+                  href={"/dashboard/workflows/" + rec.name}
+                />
               </Tooltip>
             </Space>
           );
