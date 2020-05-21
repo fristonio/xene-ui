@@ -33,7 +33,7 @@ class NavBar extends React.Component<Props, State> {
   };
 
   render() {
-    let path = this.props.location.pathname.substring("/dashboard/".length);
+    let path = this.props.location.pathname.split("/")[2];
     let defaultSelectedKey = "1";
     switch (path) {
       case "workflows": {

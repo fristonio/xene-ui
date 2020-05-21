@@ -12,7 +12,10 @@ import {
   Button,
   Tooltip,
   Tag,
+  Result,
+  Spin,
   message,
+  notification,
 } from "antd";
 import {
   DownloadOutlined,
@@ -98,11 +101,20 @@ class WorkflowsListComponent extends React.Component<{}, State> {
           }
           callback(resp, true);
         } else {
+          notification["warning"]({
+            message: "Fetch Error",
+            description:
+              "Non 200 status when fetching workflow list: " + response.status,
+          });
           callback(new Array<WorkflowInfo>(), false);
         }
       })
       .catch(function (error: any) {
-        console.error(error);
+        notification["error"]({
+          message: "Fetch Error",
+          description: "Error while fetching workflow list: " + error,
+        });
+        callback(new Array<WorkflowInfo>(), false);
       });
   };
 
@@ -229,6 +241,19 @@ class WorkflowsListComponent extends React.Component<{}, State> {
 
   render() {
     const { initLoading, data } = this.state;
+    if (this.state.initLoading) {
+      return <Spin />;
+    }
+
+    if (!this.state.initLoading && !this.state.loadingSuccess) {
+      return (
+        <Result
+          status="404"
+          title="Loading Error"
+          subTitle="Sorry, there was some error loading the page."
+        />
+      );
+    }
     const columns = [
       {
         title: "S.No",

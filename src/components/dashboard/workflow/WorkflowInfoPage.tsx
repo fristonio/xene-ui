@@ -168,11 +168,16 @@ class WorkflowInfoPage extends React.Component<Props, State> {
         key: "manifest",
         tab: "Workflow Manifest",
       },
+      {
+        key: "status",
+        tab: "Status Manifest",
+      },
     ];
 
     const contentList = {
       info: <Empty description={false} />,
       manifest: <ReactJson src={this.state.workflow} />,
+      status: <ReactJson src={this.state.status} />,
     };
 
     return (
@@ -192,7 +197,9 @@ class WorkflowInfoPage extends React.Component<Props, State> {
               this.onTabChange(key);
             }}
           >
-            {this.state.key === "info" || this.state.key === "manifest" ? (
+            {this.state.key === "info" ||
+            this.state.key === "manifest" ||
+            this.state.key === "status" ? (
               contentList[this.state.key]
             ) : (
               <Empty description={false} />
