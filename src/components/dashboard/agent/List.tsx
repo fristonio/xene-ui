@@ -220,13 +220,9 @@ class AgentListComponent extends React.Component<{}, State> {
       .apiV1RegistryAgentNameGet(name)
       .then((resp: AxiosResponse<ResponseRegistryItem>) => {
         let content: string =
-          resp.data.item !== undefined ? resp.data.item : "";
+          resp.data.item?.value !== undefined ? resp.data.item.value : "";
 
-        content = JSON.stringify(
-          JSON.parse(JSON.parse(content)["value"]),
-          null,
-          2
-        );
+        content = JSON.stringify(JSON.parse(content), null, 2);
         var blob = new Blob([content], {
           type: "text/plain;charset=utf-8",
         });

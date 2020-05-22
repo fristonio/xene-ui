@@ -33,8 +33,8 @@ interface State {
   key: string;
   initLoading: boolean;
   loadingSuccess: boolean;
-  workflow: Object;
-  status: Object;
+  workflow: string;
+  status: string;
 }
 
 class WorkflowInfoPage extends React.Component<Props, State> {
@@ -42,13 +42,13 @@ class WorkflowInfoPage extends React.Component<Props, State> {
     key: "info",
     initLoading: true,
     loadingSuccess: false,
-    workflow: {},
-    status: {},
+    workflow: "{}",
+    status: "{}",
   };
 
   componentDidMount() {
-    this.getWorkflowInfo((res: Object, success: boolean) => {
-      this.getWorkflowStatus((status: Object, s: boolean) => {
+    this.getWorkflowInfo((res: string, success: boolean) => {
+      this.getWorkflowStatus((status: string, s: boolean) => {
         this.setState({
           initLoading: false,
           loadingSuccess: success && s,
@@ -59,26 +59,22 @@ class WorkflowInfoPage extends React.Component<Props, State> {
     });
   }
 
-  getWorkflowInfo = (callback: (res: Object, success: boolean) => void) => {
+  getWorkflowInfo = (callback: (res: string, success: boolean) => void) => {
     let { name } = this.props.match.params;
 
     RegistryApiFactory(config.getAPIConfig())
       .apiV1RegistryWorkflowNameGet(name)
       .then((response: AxiosResponse<ResponseRegistryItem>) => {
-        if (response.status === 200) {
-          callback(
-            JSON.parse(
-              JSON.parse(response.data.item ? response.data.item : "")["value"]
-            ),
-            true
-          );
+        if (response !== undefined && response.status === 200) {
+          let item = response.data.item?.value;
+          callback(item !== undefined ? item : "", true);
         } else {
           notification["warning"]({
             message: "Fetch Error",
             description:
               "Non 200 status when fetching workflow info: " + response.status,
           });
-          callback({}, false);
+          callback("{}", false);
         }
       })
       .catch(function (error: any) {
@@ -86,23 +82,19 @@ class WorkflowInfoPage extends React.Component<Props, State> {
           message: "Fetch Error",
           description: "Error while fetching workflow info: " + error,
         });
-        callback({}, false);
+        callback("{}", false);
       });
   };
 
-  getWorkflowStatus = (callback: (res: Object, success: boolean) => void) => {
+  getWorkflowStatus = (callback: (res: string, success: boolean) => void) => {
     let { name } = this.props.match.params;
 
     StatusApiFactory(config.getAPIConfig())
       .apiV1StatusWorkflowNameGet(name)
       .then((response: AxiosResponse<ResponseRegistryItem>) => {
-        if (response.status === 200) {
-          callback(
-            JSON.parse(
-              JSON.parse(response.data.item ? response.data.item : "")["value"]
-            ),
-            true
-          );
+        if (response !== undefined && response.status === 200) {
+          let item = response.data.item?.value;
+          callback(item !== undefined ? item : "", true);
         } else {
           notification["warning"]({
             message: "Fetch Error",
@@ -110,7 +102,7 @@ class WorkflowInfoPage extends React.Component<Props, State> {
               "Non 200 status when fetching workflow status: " +
               response.status,
           });
-          callback({}, false);
+          callback("{}", false);
         }
       })
       .catch(function (error: any) {
@@ -118,7 +110,7 @@ class WorkflowInfoPage extends React.Component<Props, State> {
           message: "Fetch Error",
           description: "Error while fetching workflow status: " + error,
         });
-        callback({}, false);
+        callback("{}", false);
       });
   };
 
@@ -176,8 +168,8 @@ class WorkflowInfoPage extends React.Component<Props, State> {
 
     const contentList = {
       info: <Empty description={false} />,
-      manifest: <ReactJson src={this.state.workflow} />,
-      status: <ReactJson src={this.state.status} />,
+      manifest: <ReactJson src={JSON.parse(this.state.workflow)} />,
+      status: <ReactJson src={JSON.parse(this.state.status)} />,
     };
 
     return (

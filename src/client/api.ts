@@ -221,6 +221,25 @@ export interface ResponseJWTAuth {
 /**
  *
  * @export
+ * @interface ResponseKVPair
+ */
+export interface ResponseKVPair {
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseKVPair
+   */
+  key?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseKVPair
+   */
+  value?: string;
+}
+/**
+ *
+ * @export
  * @interface ResponseOauthLogin
  */
 export interface ResponseOauthLogin {
@@ -238,11 +257,11 @@ export interface ResponseOauthLogin {
  */
 export interface ResponseRegistryItem {
   /**
-   * Items contains the Serialized kvstore item
-   * @type {string}
+   *
+   * @type {ResponseKVPair}
    * @memberof ResponseRegistryItem
    */
-  item?: string;
+  item?: ResponseKVPair;
 }
 /**
  *
@@ -258,10 +277,10 @@ export interface ResponseRegistryItemsFromPrefix {
   count?: number;
   /**
    * Items contains the Serialized kvstore items
-   * @type {Array<string>}
+   * @type {Array<ResponseKVPair>}
    * @memberof ResponseRegistryItemsFromPrefix
    */
-  items?: Array<string>;
+  items?: Array<ResponseKVPair>;
 }
 /**
  *
