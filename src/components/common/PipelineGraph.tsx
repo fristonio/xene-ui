@@ -47,9 +47,6 @@ class PipelineGraph extends React.Component<Props, {}> {
       container: this.props.pipeline,
       width: 1920,
       height: 500,
-      layout: {
-        type: "dagre",
-      },
       defaultNode: {
         type: "modelRect",
         size: [270, 80],
@@ -110,9 +107,8 @@ class PipelineGraph extends React.Component<Props, {}> {
         },
       },
       modes: {
-        default: ["drag-canvas", "drag-node", "zoom-canvas"],
+        default: ["drag-canvas", "drag-node"],
       },
-      fitView: true,
       nodeStateStyles: {
         hover: {
           lineWidth: 2,

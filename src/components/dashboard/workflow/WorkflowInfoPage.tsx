@@ -1,6 +1,6 @@
 import React from "react";
 import { RouteComponentProps, withRouter, Link } from "react-router-dom";
-import ReactDOM from "react-dom";
+import { Route, Switch } from "react-router";
 import "antd/dist/antd.css";
 import "./../../../styles/index.css";
 import "./../../../styles/dashboard.css";
@@ -31,6 +31,7 @@ import { config } from "../../../config";
 import ReactJson from "react-json-view";
 
 import PipelineGraph from "./../../common/PipelineGraph";
+import PipelineInfoPage from "./PipelineInfoPage";
 
 const { Content } = Layout;
 const { Panel } = Collapse;
@@ -240,32 +241,46 @@ class WorkflowInfoPage extends React.Component<Props, State> {
             Pipelines
           </Title>
           <Collapse defaultActiveKey={[]}>
-            {Object.keys(pipelinesList).map((name: string, index: number) => {
-              let pipeline = pipelinesList[name];
-              let pipelineStatus = pipelineStatusList[name];
-              let getPanelHeader = () => (
-                <div className="space-between">
-                  <span>
-                    <b>{name}</b> - {pipeline["description"]}
-                  </span>
-                  <Space>
-                    <Tag color="blue" key={index}>
-                      {pipeline["trigger"]}
-                    </Tag>
-                    {this.getPipelineStatusTag(pipelineStatus["status"])}
-                  </Space>
-                </div>
-              );
+            {Object.keys(pipelinesList).map(
+              (pipelineName: string, index: number) => {
+                let pipeline = pipelinesList[pipelineName];
+                let pipelineStatus = pipelineStatusList[pipelineName];
+                let getPanelHeader = () => (
+                  <div className="space-between">
+                    <span>
+                      <b>
+                        <Link
+                          to={
+                            "/dashboard/workflows/" +
+                            name +
+                            "/pipeline/" +
+                            pipelineName
+                          }
+                        >
+                          {pipelineName}
+                        </Link>
+                      </b>{" "}
+                      - {pipeline["description"]}
+                    </span>
+                    <Space>
+                      <Tag color="blue" key={index}>
+                        {pipeline["trigger"]}
+                      </Tag>
+                      {this.getPipelineStatusTag(pipelineStatus["status"])}
+                    </Space>
+                  </div>
+                );
 
-              return (
-                <Panel header={getPanelHeader()} key={name}>
-                  <PipelineGraph
-                    pipeline={name}
-                    tasks={pipelinesList[name]["tasks"]}
-                  />
-                </Panel>
-              );
-            })}
+                return (
+                  <Panel header={getPanelHeader()} key={pipelineName}>
+                    <PipelineGraph
+                      pipeline={pipelineName}
+                      tasks={pipelinesList[pipelineName]["tasks"]}
+                    />
+                  </Panel>
+                );
+              }
+            )}
           </Collapse>
         </div>
       ),

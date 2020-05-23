@@ -253,6 +253,86 @@ export interface ResponseOauthLogin {
 /**
  *
  * @export
+ * @interface ResponsePipelineInfo
+ */
+export interface ResponsePipelineInfo {
+  /**
+   *
+   * @type {string}
+   * @memberof ResponsePipelineInfo
+   */
+  currentRun?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponsePipelineInfo
+   */
+  name?: string;
+  /**
+   *
+   * @type {Array<ResponsePipelineRunInfo>}
+   * @memberof ResponsePipelineInfo
+   */
+  runs?: Array<ResponsePipelineRunInfo>;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponsePipelineInfo
+   */
+  spec?: string;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ResponsePipelineInfo
+   */
+  warnings?: Array<string>;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponsePipelineInfo
+   */
+  workflow?: string;
+}
+/**
+ *
+ * @export
+ * @interface ResponsePipelineRunInfo
+ */
+export interface ResponsePipelineRunInfo {
+  /**
+   *
+   * @type {string}
+   * @memberof ResponsePipelineRunInfo
+   */
+  agent?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponsePipelineRunInfo
+   */
+  name?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponsePipelineRunInfo
+   */
+  runID?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponsePipelineRunInfo
+   */
+  status?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponsePipelineRunInfo
+   */
+  tasksStatus?: string;
+}
+/**
+ *
+ * @export
  * @interface ResponseRegistryItem
  */
 export interface ResponseRegistryItem {
@@ -1056,24 +1136,32 @@ export const InfoApiAxiosParamCreator = function (
      *
      * @summary Returns verbose information about a workflow.
      * @param {string} name Name of the workflow to get information about.
+     * @param {string} pipeline Name of the pipeline to return the info about.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    apiV1InfoWorkflowNameGet: async (
+    apiV1InfoWorkflowNamePipelinePipelineGet: async (
       name: string,
+      pipeline: string,
       options: any = {}
     ): Promise<RequestArgs> => {
       // verify required parameter 'name' is not null or undefined
       if (name === null || name === undefined) {
         throw new RequiredError(
           "name",
-          "Required parameter name was null or undefined when calling apiV1InfoWorkflowNameGet."
+          "Required parameter name was null or undefined when calling apiV1InfoWorkflowNamePipelinePipelineGet."
         );
       }
-      const localVarPath = `/api/v1/info/workflow/{name}`.replace(
-        `{${"name"}}`,
-        encodeURIComponent(String(name))
-      );
+      // verify required parameter 'pipeline' is not null or undefined
+      if (pipeline === null || pipeline === undefined) {
+        throw new RequiredError(
+          "pipeline",
+          "Required parameter pipeline was null or undefined when calling apiV1InfoWorkflowNamePipelinePipelineGet."
+        );
+      }
+      const localVarPath = `/api/v1/info/workflow/{name}/pipeline/{pipeline}`
+        .replace(`{${"name"}}`, encodeURIComponent(String(name)))
+        .replace(`{${"pipeline"}}`, encodeURIComponent(String(pipeline)));
       const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
       let baseOptions;
       if (configuration) {
@@ -1159,18 +1247,23 @@ export const InfoApiFp = function (configuration?: Configuration) {
      *
      * @summary Returns verbose information about a workflow.
      * @param {string} name Name of the workflow to get information about.
+     * @param {string} pipeline Name of the pipeline to return the info about.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async apiV1InfoWorkflowNameGet(
+    async apiV1InfoWorkflowNamePipelinePipelineGet(
       name: string,
+      pipeline: string,
       options?: any
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<ResponsePipelineInfo>
     > {
       const localVarAxiosArgs = await InfoApiAxiosParamCreator(
         configuration
-      ).apiV1InfoWorkflowNameGet(name, options);
+      ).apiV1InfoWorkflowNamePipelinePipelineGet(name, pipeline, options);
       return (
         axios: AxiosInstance = globalAxios,
         basePath: string = BASE_PATH
@@ -1214,15 +1307,17 @@ export const InfoApiFactory = function (
      *
      * @summary Returns verbose information about a workflow.
      * @param {string} name Name of the workflow to get information about.
+     * @param {string} pipeline Name of the pipeline to return the info about.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    apiV1InfoWorkflowNameGet(
+    apiV1InfoWorkflowNamePipelinePipelineGet(
       name: string,
+      pipeline: string,
       options?: any
-    ): AxiosPromise<object> {
+    ): AxiosPromise<ResponsePipelineInfo> {
       return InfoApiFp(configuration)
-        .apiV1InfoWorkflowNameGet(name, options)
+        .apiV1InfoWorkflowNamePipelinePipelineGet(name, pipeline, options)
         .then((request) => request(axios, basePath));
     },
   };
@@ -1253,13 +1348,18 @@ export class InfoApi extends BaseAPI {
    *
    * @summary Returns verbose information about a workflow.
    * @param {string} name Name of the workflow to get information about.
+   * @param {string} pipeline Name of the pipeline to return the info about.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof InfoApi
    */
-  public apiV1InfoWorkflowNameGet(name: string, options?: any) {
+  public apiV1InfoWorkflowNamePipelinePipelineGet(
+    name: string,
+    pipeline: string,
+    options?: any
+  ) {
     return InfoApiFp(this.configuration)
-      .apiV1InfoWorkflowNameGet(name, options)
+      .apiV1InfoWorkflowNamePipelinePipelineGet(name, pipeline, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }
