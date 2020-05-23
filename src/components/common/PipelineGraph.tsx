@@ -16,6 +16,7 @@ interface TaskSpec {
 class PipelineGraph extends React.Component<Props, {}> {
   graph: Graph | null = null;
 
+  container: React.RefObject<HTMLDivElement> = React.createRef();
   componentDidMount() {
     const data = {
       nodes: new Array<NodeConfig>(),
@@ -43,10 +44,11 @@ class PipelineGraph extends React.Component<Props, {}> {
         });
     }
 
+    let width = this.container.current?.offsetWidth;
     this.graph = new G6.Graph({
       container: this.props.pipeline,
-      width: 1920,
-      height: 500,
+      width: width !== undefined ? width : 1500,
+      height: 600,
       defaultNode: {
         type: "modelRect",
         size: [270, 80],
@@ -141,7 +143,7 @@ class PipelineGraph extends React.Component<Props, {}> {
   }
 
   render() {
-    return <div id={this.props.pipeline}></div>;
+    return <div id={this.props.pipeline} ref={this.container}></div>;
   }
 }
 
