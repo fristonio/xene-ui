@@ -1,5 +1,6 @@
 import React from "react";
 import { RouteComponentProps, withRouter, Link } from "react-router-dom";
+import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
 import "./../../../styles/index.css";
 import "./../../../styles/dashboard.css";
@@ -11,7 +12,15 @@ import {
   Spin,
   notification,
   Result,
+  Descriptions,
+  Collapse,
+  Tag,
+  Typography,
+  Space,
+  Tooltip,
 } from "antd";
+import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
+
 import {
   StatusApiFactory,
   RegistryApiFactory,
@@ -21,7 +30,11 @@ import { AxiosResponse } from "axios";
 import { config } from "../../../config";
 import ReactJson from "react-json-view";
 
+import PipelineGraph from "./../../common/PipelineGraph";
+
 const { Content } = Layout;
+const { Panel } = Collapse;
+const { Title } = Typography;
 
 interface RouteInfo {
   name: string;
@@ -120,6 +133,37 @@ class WorkflowInfoPage extends React.Component<Props, State> {
     });
   };
 
+  getAgents = (): Array<string> => {
+    let wfStatus = JSON.parse(this.state.status);
+    let pipelines: Object = wfStatus["pipelines"];
+
+    let agents: Array<string> = [];
+    for (let status of Object.values(pipelines)) {
+      agents.push(status["executor"]);
+    }
+
+    return agents.filter((elem: string, i: number, arr: string[]) => {
+      if (arr.indexOf(elem) === i) {
+        return elem;
+      }
+    });
+  };
+
+  getPipelineStatusTag = (status: string) => {
+    let statusIcon =
+      status === "Scheduled" ? (
+        <CheckCircleTwoTone twoToneColor="#52c41a" />
+      ) : (
+        <CloseCircleTwoTone twoToneColor="#eb2f96" />
+      );
+    return (
+      <Space>
+        <Tooltip title={status}>{statusIcon}</Tooltip>
+        <span>{status}</span>
+      </Space>
+    );
+  };
+
   render() {
     if (this.state.initLoading) {
       return <Spin />;
@@ -166,8 +210,74 @@ class WorkflowInfoPage extends React.Component<Props, State> {
       },
     ];
 
+    let workflow = JSON.parse(this.state.workflow);
+    let pipelineStatusList = JSON.parse(this.state.status)["pipelines"];
+    let pipelinesList = workflow["spec"]["pipelines"];
+
     const contentList = {
-      info: <Empty description={false} />,
+      info: (
+        <div>
+          <Descriptions title="" bordered>
+            <Descriptions.Item label="Name">
+              {workflow["metadata"]["name"]}
+            </Descriptions.Item>
+            <Descriptions.Item label="Description" span={12}>
+              {workflow["metadata"]["description"]}
+            </Descriptions.Item>
+            <Descriptions.Item label="Configured Agents">
+              {this.getAgents().map((name: string, index: number) => {
+                return (
+                  <Tag color="blue" key={index}>
+                    {name}
+                  </Tag>
+                );
+              })}
+            </Descriptions.Item>
+          </Descriptions>
+          <Title level={4} className="top-gutter-width">
+            Pipelines
+          </Title>
+          <Collapse defaultActiveKey={[]}>
+            {Object.keys(pipelinesList).map((name: string, index: number) => {
+              let getPanelHeader = (
+                name: string,
+                description: string,
+                trigger: string
+              ) => (
+                <div className="space-between">
+                  <span>
+                    <b>{name}</b> - {description}
+                  </span>
+                  <Space>
+                    <Tag color="blue" key={index}>
+                      {trigger}
+                    </Tag>
+                    {this.getPipelineStatusTag(
+                      pipelineStatusList[name]["status"]
+                    )}
+                  </Space>
+                </div>
+              );
+
+              return (
+                <Panel
+                  header={getPanelHeader(
+                    name,
+                    pipelinesList[name]["description"],
+                    pipelinesList[name]["trigger"]
+                  )}
+                  key={name}
+                >
+                  <PipelineGraph
+                    pipeline={name}
+                    tasks={pipelinesList[name]["tasks"]}
+                  />
+                </Panel>
+              );
+            })}
+          </Collapse>
+        </div>
+      ),
       manifest: <ReactJson src={JSON.parse(this.state.workflow)} />,
       status: <ReactJson src={JSON.parse(this.state.status)} />,
     };
