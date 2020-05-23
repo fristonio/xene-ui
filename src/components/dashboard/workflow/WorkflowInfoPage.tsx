@@ -137,6 +137,8 @@ class WorkflowInfoPage extends React.Component<Props, State> {
     let wfStatus = JSON.parse(this.state.status);
     let pipelines: Object = wfStatus["pipelines"];
 
+    if (pipelines === null || pipelines == undefined) return [];
+
     let agents: Array<string> = [];
     for (let status of Object.values(pipelines)) {
       agents.push(status["executor"]);
@@ -239,35 +241,24 @@ class WorkflowInfoPage extends React.Component<Props, State> {
           </Title>
           <Collapse defaultActiveKey={[]}>
             {Object.keys(pipelinesList).map((name: string, index: number) => {
-              let getPanelHeader = (
-                name: string,
-                description: string,
-                trigger: string
-              ) => (
+              let pipeline = pipelinesList[name];
+              let pipelineStatus = pipelineStatusList[name];
+              let getPanelHeader = () => (
                 <div className="space-between">
                   <span>
-                    <b>{name}</b> - {description}
+                    <b>{name}</b> - {pipeline["description"]}
                   </span>
                   <Space>
                     <Tag color="blue" key={index}>
-                      {trigger}
+                      {pipeline["trigger"]}
                     </Tag>
-                    {this.getPipelineStatusTag(
-                      pipelineStatusList[name]["status"]
-                    )}
+                    {this.getPipelineStatusTag(pipelineStatus["status"])}
                   </Space>
                 </div>
               );
 
               return (
-                <Panel
-                  header={getPanelHeader(
-                    name,
-                    pipelinesList[name]["description"],
-                    pipelinesList[name]["trigger"]
-                  )}
-                  key={name}
-                >
+                <Panel header={getPanelHeader()} key={name}>
                   <PipelineGraph
                     pipeline={name}
                     tasks={pipelinesList[name]["tasks"]}
