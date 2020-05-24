@@ -37,18 +37,29 @@ class PipelineGraph extends React.Component<Props, {}> {
           data.edges.push({
             source: name,
             target: t,
-            style: {
-              startArrow: true,
-            },
           });
         });
     }
 
-    let width = this.container.current?.offsetWidth;
+    let width = this.container.current?.scrollWidth;
+    let height = this.container.current?.scrollHeight;
     this.graph = new G6.Graph({
       container: this.props.pipeline,
       width: width !== undefined ? width : 1500,
-      height: 600,
+      height: height !== undefined ? height || 500 : 500,
+      defaultEdge: {
+        type: "cubic-horizontal",
+        style: {
+          startArrow: true,
+          stroke: "#aaa",
+          lineWidth: 1,
+        },
+      },
+      layout: {
+        type: "dagre",
+        rankdir: "RL",
+        preventOverlap: true,
+      },
       defaultNode: {
         type: "modelRect",
         size: [270, 80],
@@ -59,7 +70,6 @@ class PipelineGraph extends React.Component<Props, {}> {
           lineWidth: 1,
           fillOpacity: 1,
         },
-
         labelCfg: {
           style: {
             fill: "#595959",
