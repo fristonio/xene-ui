@@ -261,12 +261,6 @@ export interface ResponsePipelineInfo {
    * @type {string}
    * @memberof ResponsePipelineInfo
    */
-  currentRun?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ResponsePipelineInfo
-   */
   name?: string;
   /**
    *
@@ -310,12 +304,6 @@ export interface ResponsePipelineRunInfo {
    * @type {string}
    * @memberof ResponsePipelineRunInfo
    */
-  name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ResponsePipelineRunInfo
-   */
   runID?: string;
   /**
    *
@@ -323,12 +311,6 @@ export interface ResponsePipelineRunInfo {
    * @memberof ResponsePipelineRunInfo
    */
   status?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ResponsePipelineRunInfo
-   */
-  tasksStatus?: string;
 }
 /**
  *

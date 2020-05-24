@@ -1,6 +1,5 @@
 import React from "react";
 import { RouteComponentProps, withRouter, Link } from "react-router-dom";
-import { Route, Switch } from "react-router";
 import "antd/dist/antd.css";
 import "./../../../styles/index.css";
 import "./../../../styles/dashboard.css";
@@ -31,7 +30,6 @@ import { config } from "../../../config";
 import ReactJson from "react-json-view";
 
 import PipelineGraph from "./../../common/PipelineGraph";
-import PipelineInfoPage from "./PipelineInfoPage";
 
 const { Content } = Layout;
 const { Panel } = Collapse;
@@ -138,7 +136,7 @@ class WorkflowInfoPage extends React.Component<Props, State> {
     let wfStatus = JSON.parse(this.state.status);
     let pipelines: Object = wfStatus["pipelines"];
 
-    if (pipelines === null || pipelines == undefined) return [];
+    if (pipelines === null || pipelines === undefined) return [];
 
     let agents: Array<string> = [];
     for (let status of Object.values(pipelines)) {

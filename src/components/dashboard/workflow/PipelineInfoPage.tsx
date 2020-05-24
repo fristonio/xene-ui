@@ -11,13 +11,29 @@ import {
   Spin,
   notification,
   Result,
+  Space,
+  Button,
+  Tooltip,
+  Table,
+  Input,
 } from "antd";
+import {
+  SearchOutlined,
+  CloseCircleTwoTone,
+  CheckCircleTwoTone,
+} from "@ant-design/icons";
+import { FilterDropdownProps } from "antd/lib/table/interface";
 
-import { InfoApiFactory, ResponsePipelineInfo } from "./../../../client";
+import {
+  InfoApiFactory,
+  ResponsePipelineInfo,
+  ResponsePipelineRunInfo,
+} from "./../../../client";
 import { config } from "../../../config";
 import { AxiosResponse } from "axios";
 import ReactJson from "react-json-view";
 import PipelineGraph from "./../../common/PipelineGraph";
+import Highlighter from "react-highlight-words";
 
 const { Content } = Layout;
 
@@ -33,6 +49,12 @@ interface State {
   initLoading: boolean;
   loadingSuccess: boolean;
   info: ResponsePipelineInfo;
+  searchedColumn: string;
+  searchText: string;
+}
+
+interface RunInfo extends ResponsePipelineRunInfo {
+  key: string;
 }
 
 class PipelineInfoPage extends React.Component<Props, State> {
@@ -41,7 +63,11 @@ class PipelineInfoPage extends React.Component<Props, State> {
     initLoading: true,
     loadingSuccess: false,
     info: {} as ResponsePipelineInfo,
+    searchedColumn: "",
+    searchText: "",
   };
+
+  searchInput: Input | null = null;
 
   componentDidMount() {
     this.getPipelineInfo((res: ResponsePipelineInfo, success: boolean) => {
@@ -85,6 +111,110 @@ class PipelineInfoPage extends React.Component<Props, State> {
     this.setState({
       key: key,
     });
+  };
+
+  getColumnSearchProps = (dataIndex: string) => ({
+    filterDropdown: (props: FilterDropdownProps) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          ref={(node) => {
+            this.searchInput = node;
+          }}
+          placeholder={`Search ${dataIndex}`}
+          value={props.selectedKeys[0]}
+          onChange={(e) =>
+            props.setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            this.handleSearch(props.selectedKeys, props.confirm, dataIndex)
+          }
+          style={{ width: 188, marginBottom: 8, display: "block" }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() =>
+              this.handleSearch(props.selectedKeys, props.confirm, dataIndex)
+            }
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() =>
+              this.handleReset(
+                props.clearFilters ? props.clearFilters : () => {}
+              )
+            }
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+        </Space>
+      </div>
+    ),
+
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+    ),
+
+    onFilter: (
+      value: string | number | boolean,
+      record: ResponsePipelineRunInfo
+    ) => {
+      let k: boolean | undefined;
+      switch (dataIndex) {
+        case "runID":
+          k = record.runID
+            ?.toLowerCase()
+            .includes(value.toString().toLowerCase());
+          return k === undefined ? false : k;
+        default:
+          console.error("invalid filter data index: ", dataIndex);
+      }
+
+      return false;
+    },
+
+    onFilterDropdownVisibleChange: (visible: boolean) => {
+      if (visible) {
+        setTimeout(() => {
+          if (this.searchInput) this.searchInput.select();
+        });
+      }
+    },
+
+    render: (text: string) =>
+      this.state.searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          searchWords={[this.state.searchText]}
+          autoEscape
+          textToHighlight={text.toString()}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  handleSearch = (
+    selectedKeys: React.Key[],
+    confirm: () => void,
+    dataIndex: string
+  ) => {
+    confirm();
+    this.setState({
+      searchText: selectedKeys[0].toString(),
+      searchedColumn: dataIndex,
+    });
+  };
+
+  handleReset = (clearFilters: () => void) => {
+    clearFilters();
+    this.setState({ searchText: "" });
   };
 
   render() {
@@ -141,8 +271,101 @@ class PipelineInfoPage extends React.Component<Props, State> {
       this.state.info.spec !== undefined ? this.state.info.spec : "{}"
     );
 
+    const columns = [
+      {
+        title: "S.No.",
+        dataIndex: "key",
+        key: "key",
+      },
+      {
+        title: "Run ID",
+        dataIndex: "runID",
+        key: "runID",
+        ...this.getColumnSearchProps("runID"),
+        sorter: {
+          compare: (a: RunInfo, b: RunInfo) => {
+            let k = a.runID?.localeCompare(
+              b.runID !== undefined ? b.runID : ""
+            );
+            return k === undefined ? 1 : k;
+          },
+          multiple: 1,
+        },
+        render: (runID: string) => {
+          return <Link to={"runs/" + runID}>{runID}</Link>;
+        },
+      },
+      {
+        title: "Agent",
+        dataIndex: "agent",
+        key: "agent",
+        ...this.getColumnSearchProps("agent"),
+        sorter: {
+          compare: (a: RunInfo, b: RunInfo) => {
+            let k = a.agent?.localeCompare(
+              b.agent !== undefined ? b.agent : ""
+            );
+            return k === undefined ? 1 : k;
+          },
+          multiple: 1,
+        },
+      },
+      {
+        title: "Status",
+        dataIndex: "status",
+        key: "status",
+        sorter: {
+          compare: (a: RunInfo, b: RunInfo) => {
+            let k = a.status?.localeCompare(
+              b.status !== undefined ? b.status : ""
+            );
+            return k === undefined ? 2 : k;
+          },
+          multiple: 2,
+        },
+      },
+      {
+        title: "",
+        dataIndex: "status",
+        key: "status",
+        render: (status: string) => {
+          if (status === "Running" || status === "Success") {
+            return (
+              <Tooltip title="Pipeline Running">
+                <CheckCircleTwoTone twoToneColor="#52c41a" />
+              </Tooltip>
+            );
+          }
+
+          return (
+            <Tooltip title="Pipeline Run Error">
+              <CloseCircleTwoTone twoToneColor="#eb2f96" />
+            </Tooltip>
+          );
+        },
+      },
+    ];
+
+    let runInfo = this.state.info.runs?.map(
+      (run: ResponsePipelineRunInfo, index: number) => {
+        return {
+          key: (index + 1).toString(),
+          runID: run.runID,
+          agent: run.agent,
+          status: run.status,
+        };
+      }
+    );
     const contentList = {
-      info: <div>INFO</div>,
+      info: (
+        <Table
+          columns={columns}
+          dataSource={runInfo === undefined ? new Array<RunInfo>() : runInfo}
+          loading={this.state.initLoading}
+          pagination={{ position: ["bottomCenter"] }}
+          showSorterTooltip={true}
+        />
+      ),
       manifest: <ReactJson src={pipelineSpec} />,
       graph: (
         <Layout>
