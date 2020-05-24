@@ -301,10 +301,22 @@ export interface ResponsePipelineRunInfo {
   agent?: string;
   /**
    *
+   * @type {number}
+   * @memberof ResponsePipelineRunInfo
+   */
+  endTime?: number;
+  /**
+   *
    * @type {string}
    * @memberof ResponsePipelineRunInfo
    */
   runID?: string;
+  /**
+   *
+   * @type {number}
+   * @memberof ResponsePipelineRunInfo
+   */
+  startTime?: number;
   /**
    *
    * @type {string}

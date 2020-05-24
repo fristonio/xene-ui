@@ -172,6 +172,11 @@ class PipelineInfoPage extends React.Component<Props, State> {
             ?.toLowerCase()
             .includes(value.toString().toLowerCase());
           return k === undefined ? false : k;
+        case "agent":
+          k = record.agent
+            ?.toLowerCase()
+            .includes(value.toString().toLowerCase());
+          return k === undefined ? false : k;
         default:
           console.error("invalid filter data index: ", dataIndex);
       }
@@ -273,11 +278,6 @@ class PipelineInfoPage extends React.Component<Props, State> {
 
     const columns = [
       {
-        title: "S.No.",
-        dataIndex: "key",
-        key: "key",
-      },
-      {
         title: "Run ID",
         dataIndex: "runID",
         key: "runID",
@@ -305,6 +305,50 @@ class PipelineInfoPage extends React.Component<Props, State> {
             let k = a.agent?.localeCompare(
               b.agent !== undefined ? b.agent : ""
             );
+            return k === undefined ? 1 : k;
+          },
+          multiple: 1,
+        },
+      },
+      {
+        title: "Start Time",
+        dataIndex: "startTime",
+        key: "startTime",
+        ...this.getColumnSearchProps("startTime"),
+        render: (startTime: number) => {
+          let t = new Date(startTime * 1000).toLocaleTimeString("en-US");
+          return <span>{t}</span>;
+        },
+        sorter: {
+          compare: (a: RunInfo, b: RunInfo) => {
+            let k = a.startTime
+              ?.toString()
+              ?.localeCompare(
+                b.startTime?.toString() !== undefined
+                  ? b.startTime?.toString()
+                  : ""
+              );
+            return k === undefined ? 1 : k;
+          },
+          multiple: 1,
+        },
+      },
+      {
+        title: "End Time",
+        dataIndex: "endTime",
+        key: "endTime",
+        ...this.getColumnSearchProps("endTime"),
+        render: (endTime: number) => {
+          let t = new Date(endTime * 1000).toLocaleTimeString("en-US");
+          return <span>{t}</span>;
+        },
+        sorter: {
+          compare: (a: RunInfo, b: RunInfo) => {
+            let k = a.endTime
+              ?.toString()
+              ?.localeCompare(
+                b.endTime?.toString() !== undefined ? b.endTime?.toString() : ""
+              );
             return k === undefined ? 1 : k;
           },
           multiple: 1,
@@ -353,6 +397,8 @@ class PipelineInfoPage extends React.Component<Props, State> {
           runID: run.runID,
           agent: run.agent,
           status: run.status,
+          startTime: run.startTime,
+          endTime: run.endTime,
         };
       }
     );

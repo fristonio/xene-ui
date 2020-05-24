@@ -241,6 +241,7 @@ class WorkflowInfoPage extends React.Component<Props, State> {
           <Collapse defaultActiveKey={[]}>
             {Object.keys(pipelinesList).map(
               (pipelineName: string, index: number) => {
+                console.log(pipelineStatusList);
                 let pipeline = pipelinesList[pipelineName];
                 let pipelineStatus = pipelineStatusList[pipelineName];
                 let getPanelHeader = () => (
