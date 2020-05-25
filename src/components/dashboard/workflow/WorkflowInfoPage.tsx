@@ -215,6 +215,51 @@ class WorkflowInfoPage extends React.Component<Props, State> {
     let pipelineStatusList = JSON.parse(this.state.status)["pipelines"];
     let pipelinesList = workflow["spec"]["pipelines"];
 
+    let pipelineCollapsableTable = () => (
+      <Collapse defaultActiveKey={[]}>
+        {Object.keys(pipelinesList).map(
+          (pipelineName: string, index: number) => {
+            let pipeline = pipelinesList[pipelineName];
+            let pipelineStatus = pipelineStatusList[pipelineName];
+            let getPanelHeader = () => (
+              <div className="space-between">
+                <span>
+                  <b>
+                    <Link
+                      to={
+                        "/dashboard/workflows/" +
+                        name +
+                        "/pipeline/" +
+                        pipelineName
+                      }
+                    >
+                      {pipelineName}
+                    </Link>
+                  </b>{" "}
+                  - {pipeline["description"]}
+                </span>
+                <Space>
+                  <Tag color="blue" key={index}>
+                    {pipeline["trigger"]}
+                  </Tag>
+                  {this.getPipelineStatusTag(pipelineStatus["status"])}
+                </Space>
+              </div>
+            );
+
+            return (
+              <Panel header={getPanelHeader()} key={pipelineName}>
+                <PipelineGraph
+                  pipeline={pipelineName}
+                  tasks={pipelinesList[pipelineName]["tasks"]}
+                />
+              </Panel>
+            );
+          }
+        )}
+      </Collapse>
+    );
+
     const contentList = {
       info: (
         <div>
@@ -238,49 +283,11 @@ class WorkflowInfoPage extends React.Component<Props, State> {
           <Title level={4} className="top-gutter-width">
             Pipelines
           </Title>
-          <Collapse defaultActiveKey={[]}>
-            {Object.keys(pipelinesList).map(
-              (pipelineName: string, index: number) => {
-                console.log(pipelineStatusList);
-                let pipeline = pipelinesList[pipelineName];
-                let pipelineStatus = pipelineStatusList[pipelineName];
-                let getPanelHeader = () => (
-                  <div className="space-between">
-                    <span>
-                      <b>
-                        <Link
-                          to={
-                            "/dashboard/workflows/" +
-                            name +
-                            "/pipeline/" +
-                            pipelineName
-                          }
-                        >
-                          {pipelineName}
-                        </Link>
-                      </b>{" "}
-                      - {pipeline["description"]}
-                    </span>
-                    <Space>
-                      <Tag color="blue" key={index}>
-                        {pipeline["trigger"]}
-                      </Tag>
-                      {this.getPipelineStatusTag(pipelineStatus["status"])}
-                    </Space>
-                  </div>
-                );
-
-                return (
-                  <Panel header={getPanelHeader()} key={pipelineName}>
-                    <PipelineGraph
-                      pipeline={pipelineName}
-                      tasks={pipelinesList[pipelineName]["tasks"]}
-                    />
-                  </Panel>
-                );
-              }
-            )}
-          </Collapse>
+          {pipelineStatusList === null ? (
+            <Empty description={false} />
+          ) : (
+            pipelineCollapsableTable()
+          )}
         </div>
       ),
       manifest: <ReactJson src={JSON.parse(this.state.workflow)} />,

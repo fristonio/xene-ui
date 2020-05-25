@@ -304,17 +304,19 @@ class WorkflowsListComponent extends React.Component<{}, State> {
         key: "agents",
         render: (agents: Array<string>) => (
           <span>
-            {agents.map((agent) => {
-              let color = agent.length > 10 ? "geekblue" : "green";
-              if (agent.length > 15) {
-                color = "volcano";
-              }
-              return (
-                <Tag color={color} key={agent}>
-                  {agent}
-                </Tag>
-              );
-            })}
+            {agents === null
+              ? "No Agents"
+              : agents.map((agent) => {
+                  let color = agent.length > 10 ? "geekblue" : "green";
+                  if (agent.length > 15) {
+                    color = "volcano";
+                  }
+                  return (
+                    <Tag color={color} key={agent}>
+                      {agent}
+                    </Tag>
+                  );
+                })}
           </span>
         ),
       },

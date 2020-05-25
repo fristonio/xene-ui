@@ -85,7 +85,7 @@ class PipelineInfoPage extends React.Component<Props, State> {
     let { pipeline, workflow } = this.props.match.params;
 
     InfoApiFactory(config.getAPIConfig())
-      .apiV1InfoWorkflowNamePipelinePipelineGet(workflow, pipeline)
+      .apiV1InfoWorkflowWorkflowPipelinePipelineGet(workflow, pipeline)
       .then((response: AxiosResponse<ResponsePipelineInfo>) => {
         if (response !== undefined && response.status === 200) {
           let item = response.data;
@@ -292,7 +292,7 @@ class PipelineInfoPage extends React.Component<Props, State> {
           multiple: 1,
         },
         render: (runID: string) => {
-          return <Link to={"runs/" + runID}>{runID}</Link>;
+          return <Link to={pipeline + "/runs/" + runID}>{runID}</Link>;
         },
       },
       {

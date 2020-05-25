@@ -327,6 +327,37 @@ export interface ResponsePipelineRunInfo {
 /**
  *
  * @export
+ * @interface ResponsePipelineRunVerboseInfo
+ */
+export interface ResponsePipelineRunVerboseInfo {
+  /**
+   *
+   * @type {string}
+   * @memberof ResponsePipelineRunVerboseInfo
+   */
+  baseLogURL?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponsePipelineRunVerboseInfo
+   */
+  runID?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponsePipelineRunVerboseInfo
+   */
+  runInfo?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof ResponsePipelineRunVerboseInfo
+   */
+  status?: string;
+}
+/**
+ *
+ * @export
  * @interface ResponseRegistryItem
  */
 export interface ResponseRegistryItem {
@@ -1129,33 +1160,115 @@ export const InfoApiAxiosParamCreator = function (
     /**
      *
      * @summary Returns verbose information about a workflow.
-     * @param {string} name Name of the workflow to get information about.
+     * @param {string} workflow Name of the workflow to get information about.
      * @param {string} pipeline Name of the pipeline to return the info about.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    apiV1InfoWorkflowNamePipelinePipelineGet: async (
-      name: string,
+    apiV1InfoWorkflowWorkflowPipelinePipelineGet: async (
+      workflow: string,
       pipeline: string,
       options: any = {}
     ): Promise<RequestArgs> => {
-      // verify required parameter 'name' is not null or undefined
-      if (name === null || name === undefined) {
+      // verify required parameter 'workflow' is not null or undefined
+      if (workflow === null || workflow === undefined) {
         throw new RequiredError(
-          "name",
-          "Required parameter name was null or undefined when calling apiV1InfoWorkflowNamePipelinePipelineGet."
+          "workflow",
+          "Required parameter workflow was null or undefined when calling apiV1InfoWorkflowWorkflowPipelinePipelineGet."
         );
       }
       // verify required parameter 'pipeline' is not null or undefined
       if (pipeline === null || pipeline === undefined) {
         throw new RequiredError(
           "pipeline",
-          "Required parameter pipeline was null or undefined when calling apiV1InfoWorkflowNamePipelinePipelineGet."
+          "Required parameter pipeline was null or undefined when calling apiV1InfoWorkflowWorkflowPipelinePipelineGet."
         );
       }
-      const localVarPath = `/api/v1/info/workflow/{name}/pipeline/{pipeline}`
-        .replace(`{${"name"}}`, encodeURIComponent(String(name)))
+      const localVarPath = `/api/v1/info/workflow/{workflow}/pipeline/{pipeline}`
+        .replace(`{${"workflow"}}`, encodeURIComponent(String(workflow)))
         .replace(`{${"pipeline"}}`, encodeURIComponent(String(pipeline)));
+      const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+      const localVarRequestOptions = {
+        method: "GET",
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication ApiKeyAuth required
+      if (configuration && configuration.apiKey) {
+        const localVarApiKeyValue =
+          typeof configuration.apiKey === "function"
+            ? await configuration.apiKey("Authorization")
+            : await configuration.apiKey;
+        localVarHeaderParameter["Authorization"] = localVarApiKeyValue;
+      }
+
+      localVarUrlObj.query = {
+        ...localVarUrlObj.query,
+        ...localVarQueryParameter,
+        ...options.query,
+      };
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: globalImportUrl.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Returns verbose information about a pipeline run.
+     * @param {string} workflow Name of the workflow to get information about.
+     * @param {string} pipeline Name of the pipeline to return the info about.
+     * @param {string} runID RUN ID of the pipeline run.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1InfoWorkflowWorkflowPipelinePipelineRunsRunIDGet: async (
+      workflow: string,
+      pipeline: string,
+      runID: string,
+      options: any = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'workflow' is not null or undefined
+      if (workflow === null || workflow === undefined) {
+        throw new RequiredError(
+          "workflow",
+          "Required parameter workflow was null or undefined when calling apiV1InfoWorkflowWorkflowPipelinePipelineRunsRunIDGet."
+        );
+      }
+      // verify required parameter 'pipeline' is not null or undefined
+      if (pipeline === null || pipeline === undefined) {
+        throw new RequiredError(
+          "pipeline",
+          "Required parameter pipeline was null or undefined when calling apiV1InfoWorkflowWorkflowPipelinePipelineRunsRunIDGet."
+        );
+      }
+      // verify required parameter 'runID' is not null or undefined
+      if (runID === null || runID === undefined) {
+        throw new RequiredError(
+          "runID",
+          "Required parameter runID was null or undefined when calling apiV1InfoWorkflowWorkflowPipelinePipelineRunsRunIDGet."
+        );
+      }
+      const localVarPath = `/api/v1/info/workflow/{workflow}/pipeline/{pipeline}/runs/{runID}`
+        .replace(`{${"workflow"}}`, encodeURIComponent(String(workflow)))
+        .replace(`{${"pipeline"}}`, encodeURIComponent(String(pipeline)))
+        .replace(`{${"runID"}}`, encodeURIComponent(String(runID)));
       const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
       let baseOptions;
       if (configuration) {
@@ -1240,13 +1353,13 @@ export const InfoApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary Returns verbose information about a workflow.
-     * @param {string} name Name of the workflow to get information about.
+     * @param {string} workflow Name of the workflow to get information about.
      * @param {string} pipeline Name of the pipeline to return the info about.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async apiV1InfoWorkflowNamePipelinePipelineGet(
-      name: string,
+    async apiV1InfoWorkflowWorkflowPipelinePipelineGet(
+      workflow: string,
       pipeline: string,
       options?: any
     ): Promise<
@@ -1257,7 +1370,50 @@ export const InfoApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await InfoApiAxiosParamCreator(
         configuration
-      ).apiV1InfoWorkflowNamePipelinePipelineGet(name, pipeline, options);
+      ).apiV1InfoWorkflowWorkflowPipelinePipelineGet(
+        workflow,
+        pipeline,
+        options
+      );
+      return (
+        axios: AxiosInstance = globalAxios,
+        basePath: string = BASE_PATH
+      ) => {
+        const axiosRequestArgs = {
+          ...localVarAxiosArgs.options,
+          url: basePath + localVarAxiosArgs.url,
+        };
+        return axios.request(axiosRequestArgs);
+      };
+    },
+    /**
+     *
+     * @summary Returns verbose information about a pipeline run.
+     * @param {string} workflow Name of the workflow to get information about.
+     * @param {string} pipeline Name of the pipeline to return the info about.
+     * @param {string} runID RUN ID of the pipeline run.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async apiV1InfoWorkflowWorkflowPipelinePipelineRunsRunIDGet(
+      workflow: string,
+      pipeline: string,
+      runID: string,
+      options?: any
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<ResponsePipelineRunVerboseInfo>
+    > {
+      const localVarAxiosArgs = await InfoApiAxiosParamCreator(
+        configuration
+      ).apiV1InfoWorkflowWorkflowPipelinePipelineRunsRunIDGet(
+        workflow,
+        pipeline,
+        runID,
+        options
+      );
       return (
         axios: AxiosInstance = globalAxios,
         basePath: string = BASE_PATH
@@ -1300,18 +1456,46 @@ export const InfoApiFactory = function (
     /**
      *
      * @summary Returns verbose information about a workflow.
-     * @param {string} name Name of the workflow to get information about.
+     * @param {string} workflow Name of the workflow to get information about.
      * @param {string} pipeline Name of the pipeline to return the info about.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    apiV1InfoWorkflowNamePipelinePipelineGet(
-      name: string,
+    apiV1InfoWorkflowWorkflowPipelinePipelineGet(
+      workflow: string,
       pipeline: string,
       options?: any
     ): AxiosPromise<ResponsePipelineInfo> {
       return InfoApiFp(configuration)
-        .apiV1InfoWorkflowNamePipelinePipelineGet(name, pipeline, options)
+        .apiV1InfoWorkflowWorkflowPipelinePipelineGet(
+          workflow,
+          pipeline,
+          options
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Returns verbose information about a pipeline run.
+     * @param {string} workflow Name of the workflow to get information about.
+     * @param {string} pipeline Name of the pipeline to return the info about.
+     * @param {string} runID RUN ID of the pipeline run.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1InfoWorkflowWorkflowPipelinePipelineRunsRunIDGet(
+      workflow: string,
+      pipeline: string,
+      runID: string,
+      options?: any
+    ): AxiosPromise<ResponsePipelineRunVerboseInfo> {
+      return InfoApiFp(configuration)
+        .apiV1InfoWorkflowWorkflowPipelinePipelineRunsRunIDGet(
+          workflow,
+          pipeline,
+          runID,
+          options
+        )
         .then((request) => request(axios, basePath));
     },
   };
@@ -1341,19 +1525,45 @@ export class InfoApi extends BaseAPI {
   /**
    *
    * @summary Returns verbose information about a workflow.
-   * @param {string} name Name of the workflow to get information about.
+   * @param {string} workflow Name of the workflow to get information about.
    * @param {string} pipeline Name of the pipeline to return the info about.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof InfoApi
    */
-  public apiV1InfoWorkflowNamePipelinePipelineGet(
-    name: string,
+  public apiV1InfoWorkflowWorkflowPipelinePipelineGet(
+    workflow: string,
     pipeline: string,
     options?: any
   ) {
     return InfoApiFp(this.configuration)
-      .apiV1InfoWorkflowNamePipelinePipelineGet(name, pipeline, options)
+      .apiV1InfoWorkflowWorkflowPipelinePipelineGet(workflow, pipeline, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Returns verbose information about a pipeline run.
+   * @param {string} workflow Name of the workflow to get information about.
+   * @param {string} pipeline Name of the pipeline to return the info about.
+   * @param {string} runID RUN ID of the pipeline run.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof InfoApi
+   */
+  public apiV1InfoWorkflowWorkflowPipelinePipelineRunsRunIDGet(
+    workflow: string,
+    pipeline: string,
+    runID: string,
+    options?: any
+  ) {
+    return InfoApiFp(this.configuration)
+      .apiV1InfoWorkflowWorkflowPipelinePipelineRunsRunIDGet(
+        workflow,
+        pipeline,
+        runID,
+        options
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 }

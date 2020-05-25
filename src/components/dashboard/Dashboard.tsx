@@ -10,6 +10,7 @@ import AgentInfoPage from "./agent/AgentInfoPage";
 import WorkflowsListComponent from "./workflow/List";
 import WorkflowInfoPage from "./workflow/WorkflowInfoPage";
 import PipelineInfoPage from "./workflow/PipelineInfoPage";
+import PipelineRunPage from "./workflow/PipelineRunPage";
 import SecretsListComponent from "./secret/List";
 
 import "./../../styles/dashboard.css";
@@ -31,6 +32,12 @@ const Dashboard: React.FunctionComponent = () => {
       </Route>
       <Route exact path="/dashboard/workflows">
         <WorkflowsListComponent />
+      </Route>
+      <Route
+        exact
+        path="/dashboard/workflows/:workflow/pipeline/:pipeline/runs/:runID"
+      >
+        <PipelineRunPage />
       </Route>
       <Route exact path="/dashboard/workflows/:workflow/pipeline/:pipeline">
         <PipelineInfoPage />
