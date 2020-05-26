@@ -5,3 +5,7 @@
 .no-route-match {
   margin: 5rem 0;
 }
+
+.pipeline-graph-container {
+  margin: 0 1rem;
+}

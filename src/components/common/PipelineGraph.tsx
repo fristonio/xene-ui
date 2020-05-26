@@ -119,7 +119,7 @@ class PipelineGraph extends React.Component<Props, {}> {
         },
       },
       modes: {
-        default: ["drag-canvas", "drag-node"],
+        default: ["drag-canvas", "drag-node", "zoom-canvas"],
       },
       nodeStateStyles: {
         hover: {
@@ -132,6 +132,7 @@ class PipelineGraph extends React.Component<Props, {}> {
 
     this.graph.data(data);
     this.graph.render();
+    this.graph.fitView();
 
     interface event {
       item: any;
@@ -153,7 +154,13 @@ class PipelineGraph extends React.Component<Props, {}> {
   }
 
   render() {
-    return <div id={this.props.pipeline} ref={this.container}></div>;
+    return (
+      <div
+        id={this.props.pipeline}
+        ref={this.container}
+        className="pipeline-graph-container"
+      ></div>
+    );
   }
 }
 
