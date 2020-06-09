@@ -16,17 +16,28 @@ import {
   Spin,
   message,
   notification,
+  Modal,
 } from "antd";
 import {
   DownloadOutlined,
   ExpandAltOutlined,
   SearchOutlined,
+  EditOutlined,
 } from "@ant-design/icons";
 import { RegistryApiFactory, ResponseRegistryItem } from "./../../../client";
 import { config } from "../../../config";
 import { AxiosResponse } from "axios";
 import Highlighter from "react-highlight-words";
 import { FilterDropdownProps } from "antd/lib/table/interface";
+
+import brace from "brace";
+import AceEditor from "react-ace";
+
+// Import a Mode (language)
+import "brace/mode/javascript";
+
+// Import a Theme (okadia, github, xcode etc)
+import "brace/theme/github";
 
 const { Content } = Layout;
 
@@ -36,6 +47,8 @@ interface State {
   data: Array<WorkflowInfo>;
   searchText: string;
   searchedColumn: string;
+  editorActive: boolean;
+  confirmLoading: boolean;
 }
 
 interface WorkflowInfo {
@@ -65,7 +78,13 @@ class WorkflowsListComponent extends React.Component<{}, State> {
     data: [],
     searchText: "",
     searchedColumn: "",
+    editorActive: false,
+    confirmLoading: false,
   };
+
+  onChange(newValue: any) {
+    console.log("change", newValue);
+  }
 
   searchInput: Input | null = null;
 
@@ -234,6 +253,28 @@ class WorkflowsListComponent extends React.Component<{}, State> {
       });
   };
 
+  showModal = () => {
+    this.setState({
+      editorActive: true,
+      confirmLoading: false,
+    });
+  };
+
+  handleOk = () => {
+    setTimeout(() => {
+      this.setState({
+        editorActive: false,
+        confirmLoading: false,
+      });
+    }, 2000);
+  };
+
+  handleCancel = () => {
+    this.setState({
+      editorActive: false,
+    });
+  };
+
   render() {
     const { initLoading, data } = this.state;
     if (this.state.initLoading) {
@@ -355,13 +396,41 @@ class WorkflowsListComponent extends React.Component<{}, State> {
           breadcrumb={{ routes }}
           subTitle="List of all the workflows configured for xene."
         />
-        <Layout>
+        <Layout className="relative-position">
           <Table
             columns={columns}
             dataSource={data}
             loading={initLoading}
             pagination={{ position: ["bottomCenter"] }}
           />
+          <div
+            className="edit-icon"
+            onClick={() => {
+              this.showModal();
+            }}
+          >
+            <EditOutlined />
+          </div>
+          <Modal
+            title="Title"
+            visible={this.state.editorActive}
+            onOk={this.handleOk}
+            confirmLoading={this.state.confirmLoading}
+            onCancel={this.handleCancel}
+            width={1200}
+          >
+            <AceEditor
+              mode="javascript"
+              theme="github"
+              onChange={this.onChange}
+              name="ace-editor-container"
+              editorProps={{
+                $blockScrolling: true,
+              }}
+              width="1150"
+              fontSize={14}
+            />
+          </Modal>
         </Layout>
       </Content>
     );

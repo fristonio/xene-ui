@@ -9,3 +9,15 @@
 .pipeline-graph-container {
   margin: 0 1rem;
 }
+
+.edit-icon {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  font-size: 20px;
+  border-style: solid;
+  background-color: #72cc4a;
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 10px 15px;
+}

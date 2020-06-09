@@ -175,3 +175,7 @@ a {
 .top-gutter-width {
   margin-top: 1rem;
 }
+
+.relative-position {
+  position: relative;
+}
