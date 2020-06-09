@@ -613,7 +613,10 @@ export const AuthApiAxiosParamCreator = function (
           "Required parameter provider was null or undefined when calling oauthProviderGet."
         );
       }
-      const localVarPath = `/oauth/:provider`;
+      const localVarPath = `/oauth/{provider}`.replace(
+        `{${"provider"}}`,
+        encodeURIComponent(String(provider))
+      );
       const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
       let baseOptions;
       if (configuration) {
@@ -626,10 +629,6 @@ export const AuthApiAxiosParamCreator = function (
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
-
-      if (provider !== undefined) {
-        localVarQueryParameter["provider"] = provider;
-      }
 
       localVarUrlObj.query = {
         ...localVarUrlObj.query,
@@ -669,7 +668,10 @@ export const AuthApiAxiosParamCreator = function (
           "Required parameter provider was null or undefined when calling oauthProviderRedirectGet."
         );
       }
-      const localVarPath = `/oauth/:provider/redirect`;
+      const localVarPath = `/oauth/{provider}/redirect`.replace(
+        `{${"provider"}}`,
+        encodeURIComponent(String(provider))
+      );
       const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
       let baseOptions;
       if (configuration) {
@@ -682,10 +684,6 @@ export const AuthApiAxiosParamCreator = function (
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
-
-      if (provider !== undefined) {
-        localVarQueryParameter["provider"] = provider;
-      }
 
       localVarUrlObj.query = {
         ...localVarUrlObj.query,

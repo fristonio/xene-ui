@@ -7,11 +7,13 @@ export let config = {
     apiServer: "http://localhost:6060",
     authToken: "sampleAuthToken",
   },
+
   getAPIConfig(): Configuration {
     return new Configuration({
       apiKey: "Bearer " + config.xene.authToken,
       basePath: config.xene.apiServer,
     });
   },
+
   defaults: defaults,
 };
