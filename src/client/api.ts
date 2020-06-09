@@ -1311,6 +1311,78 @@ export const InfoApiAxiosParamCreator = function (
         options: localVarRequestOptions,
       };
     },
+    /**
+     *
+     * @summary Returns spec of the provided workflow pipeline.
+     * @param {string} workflow Name of the workflow to get information about.
+     * @param {string} pipeline Name of the pipeline to return the info about.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1InfoWorkflowWorkflowPipelinePipelineSpecGet: async (
+      workflow: string,
+      pipeline: string,
+      options: any = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'workflow' is not null or undefined
+      if (workflow === null || workflow === undefined) {
+        throw new RequiredError(
+          "workflow",
+          "Required parameter workflow was null or undefined when calling apiV1InfoWorkflowWorkflowPipelinePipelineSpecGet."
+        );
+      }
+      // verify required parameter 'pipeline' is not null or undefined
+      if (pipeline === null || pipeline === undefined) {
+        throw new RequiredError(
+          "pipeline",
+          "Required parameter pipeline was null or undefined when calling apiV1InfoWorkflowWorkflowPipelinePipelineSpecGet."
+        );
+      }
+      const localVarPath = `/api/v1/info/workflow/{workflow}/pipeline/{pipeline}/spec`
+        .replace(`{${"workflow"}}`, encodeURIComponent(String(workflow)))
+        .replace(`{${"pipeline"}}`, encodeURIComponent(String(pipeline)));
+      const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+      const localVarRequestOptions = {
+        method: "GET",
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication ApiKeyAuth required
+      if (configuration && configuration.apiKey) {
+        const localVarApiKeyValue =
+          typeof configuration.apiKey === "function"
+            ? await configuration.apiKey("Authorization")
+            : await configuration.apiKey;
+        localVarHeaderParameter["Authorization"] = localVarApiKeyValue;
+      }
+
+      localVarUrlObj.query = {
+        ...localVarUrlObj.query,
+        ...localVarQueryParameter,
+        ...options.query,
+      };
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: globalImportUrl.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
   };
 };
 
@@ -1425,6 +1497,42 @@ export const InfoApiFp = function (configuration?: Configuration) {
         return axios.request(axiosRequestArgs);
       };
     },
+    /**
+     *
+     * @summary Returns spec of the provided workflow pipeline.
+     * @param {string} workflow Name of the workflow to get information about.
+     * @param {string} pipeline Name of the pipeline to return the info about.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async apiV1InfoWorkflowWorkflowPipelinePipelineSpecGet(
+      workflow: string,
+      pipeline: string,
+      options?: any
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<ResponseRegistryItem>
+    > {
+      const localVarAxiosArgs = await InfoApiAxiosParamCreator(
+        configuration
+      ).apiV1InfoWorkflowWorkflowPipelinePipelineSpecGet(
+        workflow,
+        pipeline,
+        options
+      );
+      return (
+        axios: AxiosInstance = globalAxios,
+        basePath: string = BASE_PATH
+      ) => {
+        const axiosRequestArgs = {
+          ...localVarAxiosArgs.options,
+          url: basePath + localVarAxiosArgs.url,
+        };
+        return axios.request(axiosRequestArgs);
+      };
+    },
   };
 };
 
@@ -1498,6 +1606,27 @@ export const InfoApiFactory = function (
         )
         .then((request) => request(axios, basePath));
     },
+    /**
+     *
+     * @summary Returns spec of the provided workflow pipeline.
+     * @param {string} workflow Name of the workflow to get information about.
+     * @param {string} pipeline Name of the pipeline to return the info about.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1InfoWorkflowWorkflowPipelinePipelineSpecGet(
+      workflow: string,
+      pipeline: string,
+      options?: any
+    ): AxiosPromise<ResponseRegistryItem> {
+      return InfoApiFp(configuration)
+        .apiV1InfoWorkflowWorkflowPipelinePipelineSpecGet(
+          workflow,
+          pipeline,
+          options
+        )
+        .then((request) => request(axios, basePath));
+    },
   };
 };
 
@@ -1562,6 +1691,29 @@ export class InfoApi extends BaseAPI {
         workflow,
         pipeline,
         runID,
+        options
+      )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Returns spec of the provided workflow pipeline.
+   * @param {string} workflow Name of the workflow to get information about.
+   * @param {string} pipeline Name of the pipeline to return the info about.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof InfoApi
+   */
+  public apiV1InfoWorkflowWorkflowPipelinePipelineSpecGet(
+    workflow: string,
+    pipeline: string,
+    options?: any
+  ) {
+    return InfoApiFp(this.configuration)
+      .apiV1InfoWorkflowWorkflowPipelinePipelineSpecGet(
+        workflow,
+        pipeline,
         options
       )
       .then((request) => request(this.axios, this.basePath));
@@ -4460,6 +4612,196 @@ export class StatusApi extends BaseAPI {
   public apiV1StatusWorkflowPost(workflow: string, options?: any) {
     return StatusApiFp(this.configuration)
       .apiV1StatusWorkflowPost(workflow, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+}
+
+/**
+ * WebhookApi - axios parameter creator
+ * @export
+ */
+export const WebhookApiAxiosParamCreator = function (
+  configuration?: Configuration
+) {
+  return {
+    /**
+     *
+     * @summary Webhook endpoints to trigger the pipelines of a particular workflow.
+     * @param {string} workflow Name of the workflow.
+     * @param {string} pipeline Name of the pipeline to be triggered.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1WebhookTriggerWorkflowPipelinePipelineGet: async (
+      workflow: string,
+      pipeline: string,
+      options: any = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'workflow' is not null or undefined
+      if (workflow === null || workflow === undefined) {
+        throw new RequiredError(
+          "workflow",
+          "Required parameter workflow was null or undefined when calling apiV1WebhookTriggerWorkflowPipelinePipelineGet."
+        );
+      }
+      // verify required parameter 'pipeline' is not null or undefined
+      if (pipeline === null || pipeline === undefined) {
+        throw new RequiredError(
+          "pipeline",
+          "Required parameter pipeline was null or undefined when calling apiV1WebhookTriggerWorkflowPipelinePipelineGet."
+        );
+      }
+      const localVarPath = `/api/v1/webhook/trigger/{workflow}/pipeline/{pipeline}`
+        .replace(`{${"workflow"}}`, encodeURIComponent(String(workflow)))
+        .replace(`{${"pipeline"}}`, encodeURIComponent(String(pipeline)));
+      const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+      const localVarRequestOptions = {
+        method: "GET",
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication ApiKeyAuth required
+      if (configuration && configuration.apiKey) {
+        const localVarApiKeyValue =
+          typeof configuration.apiKey === "function"
+            ? await configuration.apiKey("Authorization")
+            : await configuration.apiKey;
+        localVarHeaderParameter["Authorization"] = localVarApiKeyValue;
+      }
+
+      localVarUrlObj.query = {
+        ...localVarUrlObj.query,
+        ...localVarQueryParameter,
+        ...options.query,
+      };
+      // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+      delete localVarUrlObj.search;
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: globalImportUrl.format(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+  };
+};
+
+/**
+ * WebhookApi - functional programming interface
+ * @export
+ */
+export const WebhookApiFp = function (configuration?: Configuration) {
+  return {
+    /**
+     *
+     * @summary Webhook endpoints to trigger the pipelines of a particular workflow.
+     * @param {string} workflow Name of the workflow.
+     * @param {string} pipeline Name of the pipeline to be triggered.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async apiV1WebhookTriggerWorkflowPipelinePipelineGet(
+      workflow: string,
+      pipeline: string,
+      options?: any
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+    > {
+      const localVarAxiosArgs = await WebhookApiAxiosParamCreator(
+        configuration
+      ).apiV1WebhookTriggerWorkflowPipelinePipelineGet(
+        workflow,
+        pipeline,
+        options
+      );
+      return (
+        axios: AxiosInstance = globalAxios,
+        basePath: string = BASE_PATH
+      ) => {
+        const axiosRequestArgs = {
+          ...localVarAxiosArgs.options,
+          url: basePath + localVarAxiosArgs.url,
+        };
+        return axios.request(axiosRequestArgs);
+      };
+    },
+  };
+};
+
+/**
+ * WebhookApi - factory interface
+ * @export
+ */
+export const WebhookApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance
+) {
+  return {
+    /**
+     *
+     * @summary Webhook endpoints to trigger the pipelines of a particular workflow.
+     * @param {string} workflow Name of the workflow.
+     * @param {string} pipeline Name of the pipeline to be triggered.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1WebhookTriggerWorkflowPipelinePipelineGet(
+      workflow: string,
+      pipeline: string,
+      options?: any
+    ): AxiosPromise<void> {
+      return WebhookApiFp(configuration)
+        .apiV1WebhookTriggerWorkflowPipelinePipelineGet(
+          workflow,
+          pipeline,
+          options
+        )
+        .then((request) => request(axios, basePath));
+    },
+  };
+};
+
+/**
+ * WebhookApi - object-oriented interface
+ * @export
+ * @class WebhookApi
+ * @extends {BaseAPI}
+ */
+export class WebhookApi extends BaseAPI {
+  /**
+   *
+   * @summary Webhook endpoints to trigger the pipelines of a particular workflow.
+   * @param {string} workflow Name of the workflow.
+   * @param {string} pipeline Name of the pipeline to be triggered.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof WebhookApi
+   */
+  public apiV1WebhookTriggerWorkflowPipelinePipelineGet(
+    workflow: string,
+    pipeline: string,
+    options?: any
+  ) {
+    return WebhookApiFp(this.configuration)
+      .apiV1WebhookTriggerWorkflowPipelinePipelineGet(
+        workflow,
+        pipeline,
+        options
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 }

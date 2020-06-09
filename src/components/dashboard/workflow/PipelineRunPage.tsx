@@ -12,6 +12,7 @@ import {
   notification,
   Result,
   message,
+  Steps,
 } from "antd";
 
 import { LazyLog } from "react-lazylog";
@@ -19,11 +20,16 @@ import { LazyLog } from "react-lazylog";
 import {
   InfoApiFactory,
   ResponsePipelineRunVerboseInfo,
+  ResponseRegistryItem,
 } from "./../../../client";
 import { config } from "../../../config";
 import { AxiosResponse } from "axios";
 import ReactJson from "react-json-view";
-import PipelineGraph from "./../../common/PipelineGraph";
+import {
+  PipelineGraphVerbose,
+  Task,
+  Step,
+} from "./../../common/PipelineGraphVerbose";
 
 const { Content } = Layout;
 
@@ -40,6 +46,7 @@ interface State {
   initLoading: boolean;
   loadingSuccess: boolean;
   info: ResponsePipelineRunVerboseInfo;
+  spec: string;
 }
 
 class PiplineRunPage extends React.Component<Props, State> {
@@ -48,6 +55,7 @@ class PiplineRunPage extends React.Component<Props, State> {
     initLoading: true,
     loadingSuccess: false,
     info: {} as ResponsePipelineRunVerboseInfo,
+    spec: "{}",
   };
 
   logViewerRef: React.RefObject<LazyLog> = React.createRef();
@@ -55,10 +63,13 @@ class PiplineRunPage extends React.Component<Props, State> {
   componentDidMount() {
     this.getPipelineRunInfo(
       (res: ResponsePipelineRunVerboseInfo, success: boolean) => {
-        this.setState({
-          initLoading: false,
-          loadingSuccess: success,
-          info: res,
+        this.getPipelineSpec((r: string, s: boolean) => {
+          this.setState({
+            initLoading: false,
+            loadingSuccess: success && s,
+            info: res,
+            spec: r,
+          });
         });
       }
     );
@@ -97,10 +108,87 @@ class PiplineRunPage extends React.Component<Props, State> {
       });
   };
 
+  getPipelineSpec = (callback: (res: string, success: boolean) => void) => {
+    let { workflow, pipeline } = this.props.match.params;
+
+    InfoApiFactory(config.getAPIConfig())
+      .apiV1InfoWorkflowWorkflowPipelinePipelineSpecGet(workflow, pipeline)
+      .then((response: AxiosResponse<ResponseRegistryItem>) => {
+        if (response !== undefined && response.status === 200) {
+          let item = response.data.item?.value;
+          if (item === "" || item === undefined) {
+            notification["error"]({
+              message: "Fetch Error",
+              description:
+                "Pipeline spec with the name " + pipeline + "not found",
+            });
+            callback("{}", false);
+            return;
+          }
+          callback(item, true);
+        } else {
+          notification["warning"]({
+            message: "Fetch Error",
+            description:
+              "Non 200 status when fetching pipeline spec: " + response.status,
+          });
+          callback("{}", false);
+        }
+      })
+      .catch(function (error: any) {
+        notification["error"]({
+          message: "Fetch Error",
+          description: "Error while fetching pipeline spec: " + error,
+        });
+        callback("{}", false);
+      });
+  };
+
   onTabChange = (key: string) => {
     this.setState({
       key: key,
     });
+  };
+
+  getTasks = () => {
+    let tasks = new Array<Task>();
+    let spec = JSON.parse(this.state.spec);
+    let runInfo = JSON.parse(
+      this.state.info.runInfo !== undefined ? this.state.info.runInfo : "{}"
+    );
+
+    for (let key in runInfo["tasks"]) {
+      let steps = new Array<Step>();
+      let t = runInfo["tasks"][key];
+      let tSpec = spec["tasks"][key];
+
+      let stepCount = tSpec["steps"].length;
+
+      for (let i = 0; i < stepCount; i++) {
+        let sSpec = tSpec["steps"][i];
+        let stepName = sSpec["name"];
+
+        let s = t["steps"][stepName];
+        steps.push({
+          name: stepName,
+          status: s["status"],
+          time: s["time"],
+          logFile: s["logFile"],
+          type: sSpec["type"],
+        });
+      }
+
+      tasks.push({
+        id: key,
+        name: key,
+        dependencies: tSpec["dependencies"],
+        status: t["status"],
+        description: t["description"],
+        steps: steps,
+      });
+    }
+
+    return tasks;
   };
 
   render() {
@@ -197,7 +285,7 @@ class PiplineRunPage extends React.Component<Props, State> {
       manifest: <ReactJson src={runInfo} />,
       graph: (
         <Layout>
-          <PipelineGraph pipeline={pipeline} tasks={runInfo["tasks"]} />
+          <PipelineGraphVerbose pipeline={pipeline} tasks={this.getTasks()} />
         </Layout>
       ),
     };

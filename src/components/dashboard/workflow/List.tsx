@@ -85,7 +85,6 @@ class WorkflowsListComponent extends React.Component<{}, State> {
     RegistryApiFactory(config.getAPIConfig())
       .apiV1RegistryListWorkflowsGet()
       .then((response: AxiosResponse) => {
-        console.log(response);
         if (response.status === 200) {
           let resp = new Array<WorkflowInfo>();
           for (let i = 0; i < response.data.length; i++) {
