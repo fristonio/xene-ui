@@ -36,6 +36,8 @@ import { AxiosResponse } from "axios";
 import Highlighter from "react-highlight-words";
 import { FilterDropdownProps } from "antd/lib/table/interface";
 
+import { breadcrumbItemRender } from "./../../../utils/utils";
+
 import brace from "brace";
 import AceEditor from "react-ace";
 
@@ -439,7 +441,7 @@ class WorkflowsListComponent extends React.Component<ComponentProps, State> {
         <PageHeader
           className="site-page-header"
           title="Workflows"
-          breadcrumb={{ routes }}
+          breadcrumb={{ routes, itemRender: breadcrumbItemRender }}
           subTitle="List of all the workflows configured for xene."
         />
         <Layout className="relative-position">
@@ -458,7 +460,7 @@ class WorkflowsListComponent extends React.Component<ComponentProps, State> {
             <EditOutlined />
           </div>
           <Modal
-            title="Title"
+            title="Create a Workflow"
             visible={this.state.editorActive}
             onOk={this.handleOk}
             confirmLoading={this.state.confirmLoading}

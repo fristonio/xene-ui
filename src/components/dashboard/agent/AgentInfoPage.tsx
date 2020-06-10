@@ -33,6 +33,7 @@ import {
 } from "./../../../client";
 import { AxiosResponse } from "axios";
 import { config } from "../../../config";
+import { breadcrumbItemRender } from "./../../../utils/utils";
 
 const { Content } = Layout;
 
@@ -279,7 +280,7 @@ class AgentInfoPage extends React.Component<ComponentProps, State> {
         <PageHeader
           className="site-page-header"
           title={"Agent - " + name}
-          breadcrumb={{ routes }}
+          breadcrumb={{ routes, itemRender: breadcrumbItemRender }}
           subTitle={"Information about the agent"}
         />
         <Layout>

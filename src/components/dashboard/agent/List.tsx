@@ -30,6 +30,8 @@ import Highlighter from "react-highlight-words";
 import { FilterDropdownProps } from "antd/lib/table/interface";
 import { saveAs } from "file-saver";
 
+import { breadcrumbItemRender } from "./../../../utils/utils";
+
 const { Content } = Layout;
 
 interface State {
@@ -362,7 +364,7 @@ class AgentListComponent extends React.Component<ComponentProps, State> {
         <PageHeader
           className="site-page-header"
           title="Agents"
-          breadcrumb={{ routes }}
+          breadcrumb={{ routes, itemRender: breadcrumbItemRender }}
           subTitle="List of all the agents configured for xene."
         />
         <Layout>

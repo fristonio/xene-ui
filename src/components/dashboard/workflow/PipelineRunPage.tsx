@@ -31,6 +31,7 @@ import {
   Task,
   Step,
 } from "./../../common/PipelineGraphVerbose";
+import { breadcrumbItemRender } from "./../../../utils/utils";
 
 const { Content } = Layout;
 
@@ -302,7 +303,7 @@ class PiplineRunPage extends React.Component<ComponentProps, State> {
         <PageHeader
           className="site-page-header"
           title={"Pipeline - " + pipeline}
-          breadcrumb={{ routes }}
+          breadcrumb={{ routes, itemRender: breadcrumbItemRender }}
           subTitle={"Information about the Workflow"}
         />
         <Layout>

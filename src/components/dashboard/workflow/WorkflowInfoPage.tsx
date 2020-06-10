@@ -32,6 +32,7 @@ import { config } from "../../../config";
 import ReactJson from "react-json-view";
 
 import PipelineGraph from "./../../common/PipelineGraph";
+import { breadcrumbItemRender } from "./../../../utils/utils";
 
 const { Content } = Layout;
 const { Panel } = Collapse;
@@ -307,7 +308,10 @@ class WorkflowInfoPage extends React.Component<ComponentProps, State> {
         <PageHeader
           className="site-page-header"
           title={"Workflow - " + name}
-          breadcrumb={{ routes }}
+          breadcrumb={{
+            routes,
+            itemRender: breadcrumbItemRender,
+          }}
           subTitle={"Information about the Workflow"}
         />
         <Layout>

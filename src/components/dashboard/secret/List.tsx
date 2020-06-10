@@ -30,6 +30,8 @@ import { AxiosResponse } from "axios";
 import Highlighter from "react-highlight-words";
 import { FilterDropdownProps } from "antd/lib/table/interface";
 
+import { breadcrumbItemRender } from "./../../../utils/utils";
+
 const { Content } = Layout;
 
 interface State {
@@ -344,7 +346,7 @@ class SecretsListComponent extends React.Component<ComponentProps, State> {
         <PageHeader
           className="site-page-header"
           title="Secrets"
-          breadcrumb={{ routes }}
+          breadcrumb={{ routes, itemRender: breadcrumbItemRender }}
           subTitle="List of all the secrets configured for xene."
         />
         <Layout>
