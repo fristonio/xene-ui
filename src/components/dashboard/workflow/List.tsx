@@ -1,4 +1,4 @@
-import React from "react";
+import React, { RefObject } from "react";
 import { Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import "./../../../styles/index.css";
@@ -24,7 +24,11 @@ import {
   SearchOutlined,
   EditOutlined,
 } from "@ant-design/icons";
-import { RegistryApiFactory, ResponseRegistryItem } from "./../../../client";
+import {
+  RegistryApiFactory,
+  ResponseRegistryItem,
+  ResponseHTTPMessage,
+} from "./../../../client";
 import { config } from "../../../config";
 import { AxiosResponse } from "axios";
 import Highlighter from "react-highlight-words";
@@ -87,6 +91,8 @@ class WorkflowsListComponent extends React.Component<{}, State> {
   }
 
   searchInput: Input | null = null;
+  editorRef: RefObject<AceEditor> = React.createRef();
+  workflowText = "";
 
   componentDidMount() {
     this.getWorkflowsList((res: Array<WorkflowInfo>, success: boolean) => {
@@ -261,15 +267,45 @@ class WorkflowsListComponent extends React.Component<{}, State> {
   };
 
   handleOk = () => {
-    setTimeout(() => {
-      this.setState({
-        editorActive: false,
-        confirmLoading: false,
+    let text = this.editorRef.current?.editor.getValue();
+    RegistryApiFactory(config.getAPIConfig())
+      .apiV1RegistryWorkflowPost(text === undefined ? "" : text)
+      .then((resp: AxiosResponse<ResponseHTTPMessage>) => {
+        if (resp.status === 200) {
+          this.setState({
+            editorActive: false,
+            confirmLoading: false,
+          });
+          notification["info"]({
+            message: "Workflow create complete",
+            description: resp.data.message,
+          });
+        } else {
+          notification["warning"]({
+            message: "Workflow create warning",
+            description:
+              "Non 200 status when creating workflow: " + resp.status,
+          });
+        }
+
+        this.workflowText = text === undefined ? "" : text;
+      })
+      .catch((error: any) => {
+        this.setState({
+          confirmLoading: false,
+        });
+        notification["error"]({
+          message: "Workflow create error",
+          description: "Error creating workflow: " + error,
+        });
+        this.editorRef.current?.editor.setValue(text === undefined ? "" : text);
       });
-    }, 2000);
   };
 
   handleCancel = () => {
+    let text = this.editorRef.current?.editor.getValue();
+    this.workflowText = text === undefined ? "" : text;
+
     this.setState({
       editorActive: false,
     });
@@ -388,6 +424,7 @@ class WorkflowsListComponent extends React.Component<{}, State> {
         },
       },
     ];
+
     return (
       <Content className="page-container">
         <PageHeader
@@ -429,6 +466,11 @@ class WorkflowsListComponent extends React.Component<{}, State> {
               }}
               width="1150"
               fontSize={14}
+              ref={this.editorRef}
+              value={this.workflowText}
+              showPrintMargin={true}
+              showGutter={true}
+              highlightActiveLine={true}
             />
           </Modal>
         </Layout>
