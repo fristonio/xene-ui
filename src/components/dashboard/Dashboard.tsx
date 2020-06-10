@@ -15,7 +15,7 @@ import SecretsListComponent from "./secret/List";
 
 import "./../../styles/dashboard.css";
 
-const Dashboard: React.FunctionComponent = () => {
+const Dashboard = () => {
   return (
     <Switch>
       <Route exact path="/">

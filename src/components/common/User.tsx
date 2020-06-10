@@ -8,12 +8,20 @@ import {
 } from "../../client";
 import { config } from "../../config";
 import { AxiosResponse } from "axios";
-import { useParams, RouteComponentProps, withRouter } from "react-router-dom";
+import { RouteComponentProps, withRouter } from "react-router-dom";
+import { ReduxState } from "../../redux/types";
 
 import { Spin, notification } from "antd";
 
-export const LoginComponent = () => {
-  AuthApiFactory(config.getAPIConfig())
+const mapStateToProps = (state: ReduxState) => ({
+  authToken: state.auth.authToken,
+});
+
+const cLogin = connect(mapStateToProps);
+type LoginProps = ConnectedProps<typeof cLogin> & RouteComponentProps;
+
+let Login = (props: LoginProps) => {
+  AuthApiFactory(config.getAPIConfig(props.authToken))
     .oauthProviderGet(config.defaults.oauthProvider)
     .then((response: AxiosResponse<ResponseOauthLogin>) => {
       if (response.status === 200 && response.data.loginURL !== undefined) {
@@ -36,6 +44,8 @@ export const LoginComponent = () => {
   return <Spin />;
 };
 
+export const LoginComponent = cLogin(withRouter(Login));
+
 const mapDispatchToProps = {
   login,
 };
@@ -43,7 +53,6 @@ const connector = connect(null, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector> & RouteComponentProps;
 
 let LoginCallbackComponent = (props: PropsFromRedux) => {
-  console.log(props);
   let params = new URLSearchParams(props.location.search);
 
   AuthApiFactory(config.getAPIConfig())

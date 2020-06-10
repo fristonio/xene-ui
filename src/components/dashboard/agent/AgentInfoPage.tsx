@@ -1,5 +1,7 @@
 import React from "react";
 import { RouteComponentProps, withRouter, Link } from "react-router-dom";
+import { connect, ConnectedProps } from "react-redux";
+import * as types from "./../../../redux/types";
 import "antd/dist/antd.css";
 import "./../../../styles/index.css";
 import "./../../../styles/dashboard.css";
@@ -38,8 +40,6 @@ interface RouteInfo {
   name: string;
 }
 
-interface Props extends RouteComponentProps<RouteInfo> {}
-
 interface State {
   key: string;
   workflowKey: number;
@@ -48,7 +48,15 @@ interface State {
   data: ResponseAgentVerboseInfo;
 }
 
-class AgentInfoPage extends React.Component<Props, State> {
+const mapStateToProps = (state: types.ReduxState) => ({
+  authToken: state.auth.authToken,
+});
+
+const connector = connect(mapStateToProps);
+type ComponentProps = ConnectedProps<typeof connector> &
+  RouteComponentProps<RouteInfo>;
+
+class AgentInfoPage extends React.Component<ComponentProps, State> {
   state = {
     key: "info",
     workflowKey: 0,
@@ -80,7 +88,7 @@ class AgentInfoPage extends React.Component<Props, State> {
   ) => {
     let { name } = this.props.match.params;
 
-    InfoApiFactory(config.getAPIConfig())
+    InfoApiFactory(config.getAPIConfig(this.props.authToken))
       .apiV1InfoAgentNameGet(name)
       .then((response: AxiosResponse) => {
         if (response.status === 200) {
@@ -312,4 +320,4 @@ class AgentInfoPage extends React.Component<Props, State> {
   }
 }
 
-export default withRouter(AgentInfoPage);
+export default connector(withRouter(AgentInfoPage));

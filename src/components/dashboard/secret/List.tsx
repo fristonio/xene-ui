@@ -1,4 +1,6 @@
 import React from "react";
+import { connect, ConnectedProps } from "react-redux";
+import * as types from "./../../../redux/types";
 import "antd/dist/antd.css";
 import "./../../../styles/index.css";
 import "./../../../styles/dashboard.css";
@@ -57,7 +59,14 @@ const routes = [
   },
 ];
 
-class SecretsListComponent extends React.Component<{}, State> {
+const mapStateToProps = (state: types.ReduxState) => ({
+  authToken: state.auth.authToken,
+});
+
+const connector = connect(mapStateToProps);
+type ComponentProps = ConnectedProps<typeof connector>;
+
+class SecretsListComponent extends React.Component<ComponentProps, State> {
   state = {
     initLoading: true,
     loadingSuccess: false,
@@ -81,7 +90,7 @@ class SecretsListComponent extends React.Component<{}, State> {
   getSecretsList = (
     callback: (res: Array<SecretInfo>, success: boolean) => void
   ) => {
-    RegistryApiFactory(config.getAPIConfig())
+    RegistryApiFactory(config.getAPIConfig(this.props.authToken))
       .apiV1RegistryListSecretsGet(config.defaults.agentRegistryItem)
       .then((response: AxiosResponse) => {
         if (response.status === 200) {
@@ -213,7 +222,7 @@ class SecretsListComponent extends React.Component<{}, State> {
   };
 
   downloadSecretManifest = (name: string) => {
-    RegistryApiFactory(config.getAPIConfig())
+    RegistryApiFactory(config.getAPIConfig(this.props.authToken))
       .apiV1RegistrySecretNameGet(name)
       .then((resp: AxiosResponse<ResponseRegistryItem>) => {
         let content: string =
@@ -351,4 +360,4 @@ class SecretsListComponent extends React.Component<{}, State> {
   }
 }
 
-export default SecretsListComponent;
+export default connector(SecretsListComponent);

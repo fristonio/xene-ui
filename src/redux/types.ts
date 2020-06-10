@@ -4,5 +4,9 @@ export interface State {
   authToken: string;
 }
 
+export interface ReduxState {
+  auth: State;
+}
+
 export const LOGIN_COMPLETED = "LOGIN_COMPLETED";
 export const LOGOUT_COMPLETED = "LOGOUT_COMPLETED";

@@ -1,4 +1,6 @@
 import React from "react";
+import { connect, ConnectedProps } from "react-redux";
+import * as types from "./../../../redux/types";
 import "antd/dist/antd.css";
 import "./../../../styles/index.css";
 import "./../../../styles/dashboard.css";
@@ -58,7 +60,14 @@ const routes = [
   },
 ];
 
-class AgentListComponent extends React.Component<{}, State> {
+const mapStateToProps = (state: types.ReduxState) => ({
+  authToken: state.auth.authToken,
+});
+
+const connector = connect(mapStateToProps);
+type ComponentProps = ConnectedProps<typeof connector>;
+
+class AgentListComponent extends React.Component<ComponentProps, State> {
   state = {
     initLoading: true,
     loadingSuccess: false,
@@ -82,7 +91,7 @@ class AgentListComponent extends React.Component<{}, State> {
   getAgentsList = (
     callback: (res: Array<AgentInfo>, success: boolean) => void
   ) => {
-    RegistryApiFactory(config.getAPIConfig())
+    RegistryApiFactory(config.getAPIConfig(this.props.authToken))
       .apiV1RegistryListAgentsGet(config.defaults.agentRegistryItem)
       .then((response: AxiosResponse) => {
         if (response.status === 200) {
@@ -216,7 +225,7 @@ class AgentListComponent extends React.Component<{}, State> {
   };
 
   downloadAgentManifest = (name: string) => {
-    RegistryApiFactory(config.getAPIConfig())
+    RegistryApiFactory(config.getAPIConfig(this.props.authToken))
       .apiV1RegistryAgentNameGet(name)
       .then((resp: AxiosResponse<ResponseRegistryItem>) => {
         let content: string =
@@ -369,4 +378,4 @@ class AgentListComponent extends React.Component<{}, State> {
   }
 }
 
-export default AgentListComponent;
+export default connector(AgentListComponent);

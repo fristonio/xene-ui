@@ -5,12 +5,17 @@ import * as defaults from "./defaults";
 export let config = {
   xene: {
     apiServer: "http://localhost:6060",
-    authToken: "sampleAuthToken",
   },
 
-  getAPIConfig(): Configuration {
+  getAPIConfig(authToken?: string): Configuration {
+    if (authToken === undefined) {
+      return new Configuration({
+        basePath: config.xene.apiServer,
+      });
+    }
+
     return new Configuration({
-      apiKey: "Bearer " + config.xene.authToken,
+      apiKey: "Bearer " + authToken,
       basePath: config.xene.apiServer,
     });
   },

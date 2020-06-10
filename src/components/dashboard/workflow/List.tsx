@@ -1,5 +1,7 @@
 import React, { RefObject } from "react";
 import { Link } from "react-router-dom";
+import { connect, ConnectedProps } from "react-redux";
+import * as types from "./../../../redux/types";
 import "antd/dist/antd.css";
 import "./../../../styles/index.css";
 import "./../../../styles/dashboard.css";
@@ -75,7 +77,14 @@ const routes = [
   },
 ];
 
-class WorkflowsListComponent extends React.Component<{}, State> {
+const mapStateToProps = (state: types.ReduxState) => ({
+  authToken: state.auth.authToken,
+});
+
+const connector = connect(mapStateToProps);
+type ComponentProps = ConnectedProps<typeof connector>;
+
+class WorkflowsListComponent extends React.Component<ComponentProps, State> {
   state = {
     initLoading: true,
     loadingSuccess: false,
@@ -107,7 +116,7 @@ class WorkflowsListComponent extends React.Component<{}, State> {
   getWorkflowsList = (
     callback: (res: Array<WorkflowInfo>, success: boolean) => void
   ) => {
-    RegistryApiFactory(config.getAPIConfig())
+    RegistryApiFactory(config.getAPIConfig(this.props.authToken))
       .apiV1RegistryListWorkflowsGet()
       .then((response: AxiosResponse) => {
         if (response.status === 200) {
@@ -240,7 +249,7 @@ class WorkflowsListComponent extends React.Component<{}, State> {
   };
 
   downloadWorkflowManifest = (name: string) => {
-    RegistryApiFactory(config.getAPIConfig())
+    RegistryApiFactory(config.getAPIConfig(this.props.authToken))
       .apiV1RegistryWorkflowNameGet(name)
       .then((resp: AxiosResponse<ResponseRegistryItem>) => {
         let content: string =
@@ -268,7 +277,7 @@ class WorkflowsListComponent extends React.Component<{}, State> {
 
   handleOk = () => {
     let text = this.editorRef.current?.editor.getValue();
-    RegistryApiFactory(config.getAPIConfig())
+    RegistryApiFactory(config.getAPIConfig(this.props.authToken))
       .apiV1RegistryWorkflowPost(text === undefined ? "" : text)
       .then((resp: AxiosResponse<ResponseHTTPMessage>) => {
         if (resp.status === 200) {
@@ -479,4 +488,4 @@ class WorkflowsListComponent extends React.Component<{}, State> {
   }
 }
 
-export default WorkflowsListComponent;
+export default connector(WorkflowsListComponent);

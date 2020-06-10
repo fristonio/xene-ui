@@ -1,5 +1,7 @@
-import React from "react";
+import React, { Component } from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
+import { connect, ConnectedProps } from "react-redux";
+import * as types from "./../../../redux/types";
 import "antd/dist/antd.css";
 import "./../../../styles/index.css";
 import "./../../../styles/dashboard.css";
@@ -12,7 +14,6 @@ import {
   notification,
   Result,
   message,
-  Steps,
 } from "antd";
 
 import { LazyLog } from "react-lazylog";
@@ -39,8 +40,6 @@ interface RouteInfo {
   runID: string;
 }
 
-interface Props extends RouteComponentProps<RouteInfo> {}
-
 interface State {
   key: string;
   initLoading: boolean;
@@ -49,7 +48,15 @@ interface State {
   spec: string;
 }
 
-class PiplineRunPage extends React.Component<Props, State> {
+const mapStateToProps = (state: types.ReduxState) => ({
+  authToken: state.auth.authToken,
+});
+
+const connector = connect(mapStateToProps);
+type ComponentProps = ConnectedProps<typeof connector> &
+  RouteComponentProps<RouteInfo>;
+
+class PiplineRunPage extends React.Component<ComponentProps, State> {
   state = {
     key: "graph",
     initLoading: true,
@@ -80,7 +87,7 @@ class PiplineRunPage extends React.Component<Props, State> {
   ) => {
     let { pipeline, workflow, runID } = this.props.match.params;
 
-    InfoApiFactory(config.getAPIConfig())
+    InfoApiFactory(config.getAPIConfig(this.props.authToken))
       .apiV1InfoWorkflowWorkflowPipelinePipelineRunsRunIDGet(
         workflow,
         pipeline,
@@ -111,7 +118,7 @@ class PiplineRunPage extends React.Component<Props, State> {
   getPipelineSpec = (callback: (res: string, success: boolean) => void) => {
     let { workflow, pipeline } = this.props.match.params;
 
-    InfoApiFactory(config.getAPIConfig())
+    InfoApiFactory(config.getAPIConfig(this.props.authToken))
       .apiV1InfoWorkflowWorkflowPipelinePipelineSpecGet(workflow, pipeline)
       .then((response: AxiosResponse<ResponseRegistryItem>) => {
         if (response !== undefined && response.status === 200) {
@@ -323,4 +330,4 @@ class PiplineRunPage extends React.Component<Props, State> {
   }
 }
 
-export default withRouter(PiplineRunPage);
+export default connector(withRouter(PiplineRunPage));

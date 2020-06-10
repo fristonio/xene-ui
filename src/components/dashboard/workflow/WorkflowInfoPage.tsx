@@ -1,5 +1,7 @@
 import React from "react";
 import { RouteComponentProps, withRouter, Link } from "react-router-dom";
+import { connect, ConnectedProps } from "react-redux";
+import * as types from "./../../../redux/types";
 import "antd/dist/antd.css";
 import "./../../../styles/index.css";
 import "./../../../styles/dashboard.css";
@@ -39,8 +41,6 @@ interface RouteInfo {
   name: string;
 }
 
-interface Props extends RouteComponentProps<RouteInfo> {}
-
 interface State {
   key: string;
   initLoading: boolean;
@@ -49,7 +49,15 @@ interface State {
   status: string;
 }
 
-class WorkflowInfoPage extends React.Component<Props, State> {
+const mapStateToProps = (state: types.ReduxState) => ({
+  authToken: state.auth.authToken,
+});
+
+const connector = connect(mapStateToProps);
+type ComponentProps = ConnectedProps<typeof connector> &
+  RouteComponentProps<RouteInfo>;
+
+class WorkflowInfoPage extends React.Component<ComponentProps, State> {
   state = {
     key: "info",
     initLoading: true,
@@ -74,7 +82,7 @@ class WorkflowInfoPage extends React.Component<Props, State> {
   getWorkflowInfo = (callback: (res: string, success: boolean) => void) => {
     let { name } = this.props.match.params;
 
-    RegistryApiFactory(config.getAPIConfig())
+    RegistryApiFactory(config.getAPIConfig(this.props.authToken))
       .apiV1RegistryWorkflowNameGet(name)
       .then((response: AxiosResponse<ResponseRegistryItem>) => {
         if (response !== undefined && response.status === 200) {
@@ -101,7 +109,7 @@ class WorkflowInfoPage extends React.Component<Props, State> {
   getWorkflowStatus = (callback: (res: string, success: boolean) => void) => {
     let { name } = this.props.match.params;
 
-    StatusApiFactory(config.getAPIConfig())
+    StatusApiFactory(config.getAPIConfig(this.props.authToken))
       .apiV1StatusWorkflowNameGet(name)
       .then((response: AxiosResponse<ResponseRegistryItem>) => {
         if (response !== undefined && response.status === 200) {
@@ -325,4 +333,4 @@ class WorkflowInfoPage extends React.Component<Props, State> {
   }
 }
 
-export default withRouter(WorkflowInfoPage);
+export default connector(withRouter(WorkflowInfoPage));

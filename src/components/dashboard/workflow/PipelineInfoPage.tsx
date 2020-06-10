@@ -1,5 +1,7 @@
 import React from "react";
 import { RouteComponentProps, withRouter, Link } from "react-router-dom";
+import { connect, ConnectedProps } from "react-redux";
+import * as types from "./../../../redux/types";
 import "antd/dist/antd.css";
 import "./../../../styles/index.css";
 import "./../../../styles/dashboard.css";
@@ -42,8 +44,6 @@ interface RouteInfo {
   workflow: string;
 }
 
-interface Props extends RouteComponentProps<RouteInfo> {}
-
 interface State {
   key: string;
   initLoading: boolean;
@@ -57,7 +57,15 @@ interface RunInfo extends ResponsePipelineRunInfo {
   key: string;
 }
 
-class PipelineInfoPage extends React.Component<Props, State> {
+const mapStateToProps = (state: types.ReduxState) => ({
+  authToken: state.auth.authToken,
+});
+
+const connector = connect(mapStateToProps);
+type ComponentProps = ConnectedProps<typeof connector> &
+  RouteComponentProps<RouteInfo>;
+
+class PipelineInfoPage extends React.Component<ComponentProps, State> {
   state = {
     key: "info",
     initLoading: true,
@@ -84,7 +92,7 @@ class PipelineInfoPage extends React.Component<Props, State> {
   ) => {
     let { pipeline, workflow } = this.props.match.params;
 
-    InfoApiFactory(config.getAPIConfig())
+    InfoApiFactory(config.getAPIConfig(this.props.authToken))
       .apiV1InfoWorkflowWorkflowPipelinePipelineGet(workflow, pipeline)
       .then((response: AxiosResponse<ResponsePipelineInfo>) => {
         if (response !== undefined && response.status === 200) {
@@ -451,4 +459,4 @@ class PipelineInfoPage extends React.Component<Props, State> {
   }
 }
 
-export default withRouter(PipelineInfoPage);
+export default connector(withRouter(PipelineInfoPage));
