@@ -23,6 +23,7 @@ import {
   SearchOutlined,
   CloseCircleTwoTone,
   CheckCircleTwoTone,
+  AimOutlined,
 } from "@ant-design/icons";
 import { FilterDropdownProps } from "antd/lib/table/interface";
 
@@ -30,6 +31,8 @@ import {
   InfoApiFactory,
   ResponsePipelineInfo,
   ResponsePipelineRunInfo,
+  WebhookApiFactory,
+  ResponseHTTPMessage,
 } from "./../../../client";
 import { config } from "../../../config";
 import { AxiosResponse } from "axios";
@@ -232,6 +235,33 @@ class PipelineInfoPage extends React.Component<ComponentProps, State> {
     this.setState({ searchText: "" });
   };
 
+  triggerPipeline = () => {
+    let { pipeline, workflow } = this.props.match.params;
+
+    let pipelineSpec = JSON.parse(
+      this.state.info.spec !== undefined ? this.state.info.spec : "{}"
+    );
+
+    WebhookApiFactory(config.getAPIConfig(this.props.authToken))
+      .apiV1WebhookTriggerWorkflowTriggerPipelineGet(
+        workflow,
+        pipeline,
+        pipelineSpec["trigger"]
+      )
+      .then((resp: AxiosResponse<ResponseHTTPMessage>) => {
+        notification["info"]({
+          message: "Pipeline Triggered",
+          description: "Pipeline " + resp.data.message,
+        });
+      })
+      .catch((err: any) => {
+        notification["error"]({
+          message: "Error Triggering Pipeline",
+          description: "Pipeline " + err,
+        });
+      });
+  };
+
   render() {
     if (this.state.initLoading) {
       return <Spin />;
@@ -430,6 +460,19 @@ class PipelineInfoPage extends React.Component<ComponentProps, State> {
       ),
     };
 
+    let title = (
+      <div className="space-between">
+        <span>{pipeline}</span>
+        <Button
+          type="primary"
+          icon={<AimOutlined />}
+          onClick={() => this.triggerPipeline()}
+        >
+          Run Pipeline
+        </Button>
+      </div>
+    );
+
     return (
       <Content className="page-container">
         <PageHeader
@@ -440,7 +483,7 @@ class PipelineInfoPage extends React.Component<ComponentProps, State> {
         />
         <Layout>
           <Card
-            title={pipeline}
+            title={title}
             tabList={tabList}
             activeTabKey={this.state.key}
             onTabChange={(key) => {

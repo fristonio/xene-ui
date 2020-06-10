@@ -32,6 +32,7 @@ import {
   Step,
 } from "./../../common/PipelineGraphVerbose";
 import { breadcrumbItemRender } from "./../../../utils/utils";
+import { time } from "console";
 
 const { Content } = Layout;
 
@@ -47,6 +48,7 @@ interface State {
   loadingSuccess: boolean;
   info: ResponsePipelineRunVerboseInfo;
   spec: string;
+  time: number;
 }
 
 const mapStateToProps = (state: types.ReduxState) => ({
@@ -64,11 +66,13 @@ class PiplineRunPage extends React.Component<ComponentProps, State> {
     loadingSuccess: false,
     info: {} as ResponsePipelineRunVerboseInfo,
     spec: "{}",
+    time: Date.now(),
   };
 
   logViewerRef: React.RefObject<LazyLog> = React.createRef();
+  interval = {} as NodeJS.Timeout;
 
-  componentDidMount() {
+  updateComponentState() {
     this.getPipelineRunInfo(
       (res: ResponsePipelineRunVerboseInfo, success: boolean) => {
         this.getPipelineSpec((r: string, s: boolean) => {
@@ -77,10 +81,23 @@ class PiplineRunPage extends React.Component<ComponentProps, State> {
             loadingSuccess: success && s,
             info: res,
             spec: r,
+            time: Date.now(),
           });
         });
       }
     );
+  }
+
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      this.updateComponentState();
+    }, 2000);
+
+    this.updateComponentState();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   getPipelineRunInfo = (

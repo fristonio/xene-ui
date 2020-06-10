@@ -4627,31 +4627,41 @@ export const WebhookApiAxiosParamCreator = function (
      * @summary Webhook endpoints to trigger the pipelines of a particular workflow.
      * @param {string} workflow Name of the workflow.
      * @param {string} pipeline Name of the pipeline to be triggered.
+     * @param {string} trigger Name of the trigger associated with the pipeline
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    apiV1WebhookTriggerWorkflowPipelinePipelineGet: async (
+    apiV1WebhookTriggerWorkflowTriggerPipelineGet: async (
       workflow: string,
       pipeline: string,
+      trigger: string,
       options: any = {}
     ): Promise<RequestArgs> => {
       // verify required parameter 'workflow' is not null or undefined
       if (workflow === null || workflow === undefined) {
         throw new RequiredError(
           "workflow",
-          "Required parameter workflow was null or undefined when calling apiV1WebhookTriggerWorkflowPipelinePipelineGet."
+          "Required parameter workflow was null or undefined when calling apiV1WebhookTriggerWorkflowTriggerPipelineGet."
         );
       }
       // verify required parameter 'pipeline' is not null or undefined
       if (pipeline === null || pipeline === undefined) {
         throw new RequiredError(
           "pipeline",
-          "Required parameter pipeline was null or undefined when calling apiV1WebhookTriggerWorkflowPipelinePipelineGet."
+          "Required parameter pipeline was null or undefined when calling apiV1WebhookTriggerWorkflowTriggerPipelineGet."
         );
       }
-      const localVarPath = `/api/v1/webhook/trigger/{workflow}/pipeline/{pipeline}`
+      // verify required parameter 'trigger' is not null or undefined
+      if (trigger === null || trigger === undefined) {
+        throw new RequiredError(
+          "trigger",
+          "Required parameter trigger was null or undefined when calling apiV1WebhookTriggerWorkflowTriggerPipelineGet."
+        );
+      }
+      const localVarPath = `/api/v1/webhook/trigger/{workflow}/{trigger}/{pipeline}`
         .replace(`{${"workflow"}}`, encodeURIComponent(String(workflow)))
-        .replace(`{${"pipeline"}}`, encodeURIComponent(String(pipeline)));
+        .replace(`{${"pipeline"}}`, encodeURIComponent(String(pipeline)))
+        .replace(`{${"trigger"}}`, encodeURIComponent(String(trigger)));
       const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
       let baseOptions;
       if (configuration) {
@@ -4708,21 +4718,27 @@ export const WebhookApiFp = function (configuration?: Configuration) {
      * @summary Webhook endpoints to trigger the pipelines of a particular workflow.
      * @param {string} workflow Name of the workflow.
      * @param {string} pipeline Name of the pipeline to be triggered.
+     * @param {string} trigger Name of the trigger associated with the pipeline
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async apiV1WebhookTriggerWorkflowPipelinePipelineGet(
+    async apiV1WebhookTriggerWorkflowTriggerPipelineGet(
       workflow: string,
       pipeline: string,
+      trigger: string,
       options?: any
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<ResponseHTTPMessage>
     > {
       const localVarAxiosArgs = await WebhookApiAxiosParamCreator(
         configuration
-      ).apiV1WebhookTriggerWorkflowPipelinePipelineGet(
+      ).apiV1WebhookTriggerWorkflowTriggerPipelineGet(
         workflow,
         pipeline,
+        trigger,
         options
       );
       return (
@@ -4754,18 +4770,21 @@ export const WebhookApiFactory = function (
      * @summary Webhook endpoints to trigger the pipelines of a particular workflow.
      * @param {string} workflow Name of the workflow.
      * @param {string} pipeline Name of the pipeline to be triggered.
+     * @param {string} trigger Name of the trigger associated with the pipeline
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    apiV1WebhookTriggerWorkflowPipelinePipelineGet(
+    apiV1WebhookTriggerWorkflowTriggerPipelineGet(
       workflow: string,
       pipeline: string,
+      trigger: string,
       options?: any
-    ): AxiosPromise<void> {
+    ): AxiosPromise<ResponseHTTPMessage> {
       return WebhookApiFp(configuration)
-        .apiV1WebhookTriggerWorkflowPipelinePipelineGet(
+        .apiV1WebhookTriggerWorkflowTriggerPipelineGet(
           workflow,
           pipeline,
+          trigger,
           options
         )
         .then((request) => request(axios, basePath));
@@ -4785,19 +4804,22 @@ export class WebhookApi extends BaseAPI {
    * @summary Webhook endpoints to trigger the pipelines of a particular workflow.
    * @param {string} workflow Name of the workflow.
    * @param {string} pipeline Name of the pipeline to be triggered.
+   * @param {string} trigger Name of the trigger associated with the pipeline
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof WebhookApi
    */
-  public apiV1WebhookTriggerWorkflowPipelinePipelineGet(
+  public apiV1WebhookTriggerWorkflowTriggerPipelineGet(
     workflow: string,
     pipeline: string,
+    trigger: string,
     options?: any
   ) {
     return WebhookApiFp(this.configuration)
-      .apiV1WebhookTriggerWorkflowPipelinePipelineGet(
+      .apiV1WebhookTriggerWorkflowTriggerPipelineGet(
         workflow,
         pipeline,
+        trigger,
         options
       )
       .then((request) => request(this.axios, this.basePath));

@@ -75,6 +75,7 @@ class PipelineGraphVerbose extends React.Component<Props, {}> {
               height: 40 + cfg.steps.length * 20,
               stroke: color,
               radius: r,
+              fill: "#fff",
             },
             name: "main-box",
             draggable: true,
