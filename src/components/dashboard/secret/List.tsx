@@ -292,7 +292,7 @@ class SecretsListComponent extends React.Component<ComponentProps, State> {
         },
         render: (type: string) => {
           return (
-            <Tag color="blue" key={type}>
+            <Tag color="cyan" key={type}>
               {type}
             </Tag>
           );

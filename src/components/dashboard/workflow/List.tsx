@@ -368,7 +368,7 @@ class WorkflowsListComponent extends React.Component<ComponentProps, State> {
         render: (pipelines: Array<string>) => (
           <>
             {pipelines.map((pipeline: string) => (
-              <Tag color="geekblue" key={pipeline}>
+              <Tag color="cyan" key={pipeline}>
                 {pipeline}
               </Tag>
             ))}
@@ -382,7 +382,7 @@ class WorkflowsListComponent extends React.Component<ComponentProps, State> {
         render: (triggers: Array<string>) => (
           <>
             {triggers.map((trigger: string) => (
-              <Tag color="geekblue" key={trigger}>
+              <Tag color="volcano" key={trigger}>
                 {trigger}
               </Tag>
             ))}
@@ -398,7 +398,7 @@ class WorkflowsListComponent extends React.Component<ComponentProps, State> {
             {agents === null
               ? "No Agents"
               : agents.map((agent) => {
-                  let color = agent.length > 10 ? "geekblue" : "green";
+                  let color = agent.length > 10 ? "magenta" : "pink";
                   if (agent.length > 15) {
                     color = "volcano";
                   }
