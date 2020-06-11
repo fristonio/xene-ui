@@ -2,7 +2,7 @@ import React from "react";
 import { RouteComponentProps, withRouter, Link } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import * as types from "./../../../redux/types";
-import "antd/dist/antd.css";
+import "antd/dist/antd.dark.css";
 import "./../../../styles/index.css";
 import "./../../../styles/dashboard.css";
 import {
@@ -176,7 +176,11 @@ class WorkflowInfoPage extends React.Component<ComponentProps, State> {
 
   render() {
     if (this.state.initLoading) {
-      return <Spin />;
+      return (
+        <Layout className="spin-layout">
+          <Spin />
+        </Layout>
+      );
     }
 
     if (!this.state.initLoading && !this.state.loadingSuccess) {
@@ -299,8 +303,22 @@ class WorkflowInfoPage extends React.Component<ComponentProps, State> {
           )}
         </div>
       ),
-      manifest: <ReactJson src={JSON.parse(this.state.workflow)} />,
-      status: <ReactJson src={JSON.parse(this.state.status)} />,
+      manifest: (
+        <ReactJson
+          src={JSON.parse(this.state.workflow)}
+          enableClipboard={true}
+          theme="tomorrow"
+          iconStyle="triangle"
+        />
+      ),
+      status: (
+        <ReactJson
+          src={JSON.parse(this.state.status)}
+          enableClipboard={true}
+          theme="tomorrow"
+          iconStyle="triangle"
+        />
+      ),
     };
 
     return (

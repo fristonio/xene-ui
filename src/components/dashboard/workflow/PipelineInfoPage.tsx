@@ -2,7 +2,7 @@ import React from "react";
 import { RouteComponentProps, withRouter, Link } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import * as types from "./../../../redux/types";
-import "antd/dist/antd.css";
+import "antd/dist/antd.dark.css";
 import "./../../../styles/index.css";
 import "./../../../styles/dashboard.css";
 import {
@@ -264,7 +264,11 @@ class PipelineInfoPage extends React.Component<ComponentProps, State> {
 
   render() {
     if (this.state.initLoading) {
-      return <Spin />;
+      return (
+        <Layout className="spin-layout">
+          <Spin />
+        </Layout>
+      );
     }
 
     if (!this.state.initLoading && !this.state.loadingSuccess) {
