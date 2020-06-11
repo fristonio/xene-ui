@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import { Layout } from "antd";
 
+import "antd/dist/antd.dark.css";
 import "./styles/index.css";
 
 import {

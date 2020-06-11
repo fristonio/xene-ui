@@ -1,7 +1,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import * as types from "./../../../redux/types";
-import "antd/dist/antd.css";
+import "antd/dist/antd.dark.css";
 import "./../../../styles/index.css";
 import "./../../../styles/dashboard.css";
 import {
@@ -250,7 +250,11 @@ class AgentListComponent extends React.Component<ComponentProps, State> {
     const { initLoading, data } = this.state;
 
     if (this.state.initLoading) {
-      return <Spin />;
+      return (
+        <Layout className="spin-layout">
+          <Spin />
+        </Layout>
+      );
     }
 
     if (!this.state.initLoading && !this.state.loadingSuccess) {

@@ -6,6 +6,8 @@ import {
   ResponseJWTAuth,
   ResponseOauthLogin,
 } from "../../client";
+
+import { Layout } from "antd";
 import { config } from "../../config";
 import { AxiosResponse } from "axios";
 import { RouteComponentProps, withRouter } from "react-router-dom";
@@ -41,7 +43,11 @@ let Login = (props: LoginProps) => {
       });
     });
 
-  return <Spin />;
+  return (
+    <Layout className="spin-layout">
+      <Spin />
+    </Layout>
+  );
 };
 
 export const LoginComponent = cLogin(withRouter(Login));
