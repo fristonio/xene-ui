@@ -19,13 +19,16 @@ import {
   Typography,
   Space,
   Tooltip,
+  Button,
 } from "antd";
-import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
+import { CheckCircleTwoTone, CloseCircleTwoTone, ExpandAltOutlined, AimOutlined } from "@ant-design/icons";
 
 import {
   StatusApiFactory,
   RegistryApiFactory,
   ResponseRegistryItem,
+  WebhookApiFactory,
+  ResponseHTTPMessage,
 } from "./../../../client";
 import { AxiosResponse } from "axios";
 import { config } from "../../../config";
@@ -174,6 +177,33 @@ class WorkflowInfoPage extends React.Component<ComponentProps, State> {
     );
   };
 
+  invokeTrigger = (workflow: string, trigger: string) => {
+    WebhookApiFactory(config.getAPIConfig(this.props.authToken))
+      .apiV1WebhookTriggerWorkflowTriggerPipelineGet(workflow, "*", trigger)
+      .then((resp: AxiosResponse<ResponseHTTPMessage>) => {
+        if (resp !== undefined && resp.status === 200) {
+          let item = resp.data.message;
+          notification["info"]({
+            message: "Trigger Invoked",
+            description: item,
+          });
+        } else {
+          notification["warning"]({
+            message: "Error Invoking Trigger",
+            description:
+              "Non 200 status when invoking trigger: " +
+              resp.status,
+          });
+        }
+      })
+      .catch(function (error: any) {
+        notification["error"]({
+          message: "Error Invoking Trigger",
+          description: "Error invoking trigger: " + error,
+        });
+      });
+  };
+
   render() {
     if (this.state.initLoading) {
       return (
@@ -255,7 +285,18 @@ class WorkflowInfoPage extends React.Component<ComponentProps, State> {
                   <Tag color="blue" key={index}>
                     {pipeline["trigger"]}
                   </Tag>
-                  {this.getPipelineStatusTag(pipelineStatus["status"])}
+                  <span>  
+                    {this.getPipelineStatusTag(pipelineStatus["status"])}
+                  </span>
+                  <span></span>
+                  <Tooltip title="Explore Pipeline">
+                    <Button
+                      type="primary"
+                      icon={<ExpandAltOutlined />}
+                      href={"/dashboard/workflows/" + name + "/pipeline/" + pipelineName}
+                      size={"small"}
+                    />
+                  </Tooltip>
                 </Space>
               </div>
             );
@@ -291,6 +332,25 @@ class WorkflowInfoPage extends React.Component<ComponentProps, State> {
                   </Tag>
                 );
               })}
+            </Descriptions.Item>
+            <Descriptions.Item label="Triggers">
+              {
+                <Space>
+                  {Object.keys(workflow["spec"]["triggers"])
+                    .map((name: string, index: number) => {
+                      return (<Button
+                        type="primary"
+                        icon={<AimOutlined />}
+                        onClick={() => this.invokeTrigger(workflow["metadata"]["name"], name)}
+                        key={index}
+                        size={"middle"}
+                      >
+                        Trigger - {name}
+                      </Button>);
+                  })
+                }
+                </Space>
+              }
             </Descriptions.Item>
           </Descriptions>
           <Title level={4} className="top-gutter-width">

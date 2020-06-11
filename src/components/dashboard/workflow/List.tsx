@@ -45,7 +45,7 @@ import AceEditor from "react-ace";
 import "brace/mode/javascript";
 
 // Import a Theme (okadia, github, xcode etc)
-import "brace/theme/github";
+import "brace/theme/monokai";
 
 const { Content } = Layout;
 
@@ -473,7 +473,7 @@ class WorkflowsListComponent extends React.Component<ComponentProps, State> {
           >
             <AceEditor
               mode="javascript"
-              theme="github"
+              theme="monokai"
               onChange={this.onChange}
               name="ace-editor-container"
               editorProps={{
