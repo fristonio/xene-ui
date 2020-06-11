@@ -48,7 +48,6 @@ interface State {
   loadingSuccess: boolean;
   info: ResponsePipelineRunVerboseInfo;
   spec: string;
-  time: number;
 }
 
 const mapStateToProps = (state: types.ReduxState) => ({
@@ -66,11 +65,9 @@ class PiplineRunPage extends React.Component<ComponentProps, State> {
     loadingSuccess: false,
     info: {} as ResponsePipelineRunVerboseInfo,
     spec: "{}",
-    time: Date.now(),
   };
 
   logViewerRef: React.RefObject<LazyLog> = React.createRef();
-  interval = {} as NodeJS.Timeout;
 
   updateComponentState() {
     this.getPipelineRunInfo(
@@ -81,7 +78,6 @@ class PiplineRunPage extends React.Component<ComponentProps, State> {
             loadingSuccess: success && s,
             info: res,
             spec: r,
-            time: Date.now(),
           });
         });
       }
@@ -89,15 +85,7 @@ class PiplineRunPage extends React.Component<ComponentProps, State> {
   }
 
   componentDidMount() {
-    this.interval = setInterval(() => {
-      this.updateComponentState();
-    }, 2000);
-
     this.updateComponentState();
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval);
   }
 
   getPipelineRunInfo = (
@@ -311,7 +299,14 @@ class PiplineRunPage extends React.Component<ComponentProps, State> {
           />
         </div>
       ),
-      manifest: <ReactJson src={runInfo} />,
+      manifest: (
+        <ReactJson
+          src={runInfo}
+          enableClipboard={true}
+          theme="tomorrow"
+          iconStyle="triangle"
+        />
+      ),
       graph: (
         <Layout>
           <PipelineGraphVerbose pipeline={pipeline} tasks={this.getTasks()} />

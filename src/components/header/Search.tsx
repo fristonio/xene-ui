@@ -13,7 +13,7 @@ const SearchHeader: React.FunctionComponent = () => {
     <Header className="search-header align-center">
       <div className="search-bar align-center">
         <Search
-          placeholder="search in xene"
+          placeholder="Search in Xene"
           enterButton="Search"
           size="middle"
           onSearch={(value) => console.log(value)}
